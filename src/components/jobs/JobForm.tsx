@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { Job } from '../../lib/supabase'
 import { Button } from '../ui/Button'
-import { X } from 'lucide-react'
+import { LocationPicker } from '../maps/LocationPicker'
+import { LocationDisplay } from '../maps/LocationDisplay'
+import { X, MapPin, Plus } from 'lucide-react'
 
 const jobSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -15,6 +18,12 @@ const jobSchema = z.object({
 
 type JobFormData = z.infer<typeof jobSchema>
 
+interface LocationData {
+  lat: number
+  lng: number
+  address?: string
+}
+
 interface JobFormProps {
   job?: Job
   onSubmit: (data: Partial<Job>) => void
@@ -24,6 +33,10 @@ interface JobFormProps {
 
 export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormProps) {
   const isEdit = !!job
+  const [showLocationPicker, setShowLocationPicker] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
+    job?.location || null
+  )
 
   const {
     register,
@@ -44,6 +57,7 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
     const submitData: Partial<Job> = {
       ...data,
       due_date: data.due_date ? new Date(data.due_date).toISOString() : undefined,
+      location: selectedLocation || undefined,
     }
     
     if (isEdit) {
@@ -51,6 +65,15 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
     }
     
     onSubmit(submitData)
+  }
+
+  const handleLocationSelect = (location: LocationData) => {
+    setSelectedLocation(location)
+    setShowLocationPicker(false)
+  }
+
+  const handleRemoveLocation = () => {
+    setSelectedLocation(null)
   }
 
   return (
@@ -155,6 +178,53 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
             )}
           </div>
 
+          {/* Location */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Location (Optional)
+            </label>
+            
+            {selectedLocation ? (
+              <div className="border border-gray-300 rounded-lg p-3">
+                <LocationDisplay 
+                  location={selectedLocation} 
+                  showMapLink={false}
+                  className="mb-2"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowLocationPicker(true)}
+                  >
+                    <MapPin size={14} className="mr-1" />
+                    Change
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveLocation}
+                  >
+                    <X size={14} className="mr-1" />
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setShowLocationPicker(true)}
+                className="w-full"
+              >
+                <Plus size={16} className="mr-2" />
+                Add Location
+              </Button>
+            )}
+          </div>
+
           {/* Actions */}
           <div className="flex gap-3 pt-4">
             <Button
@@ -175,6 +245,15 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
           </div>
         </form>
       </div>
+      
+      {/* Location Picker Modal */}
+      {showLocationPicker && (
+        <LocationPicker
+          initialLocation={selectedLocation || undefined}
+          onLocationSelect={handleLocationSelect}
+          onClose={() => setShowLocationPicker(false)}
+        />
+      )}
     </div>
   )
 }

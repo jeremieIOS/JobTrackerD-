@@ -1,8 +1,8 @@
 import type { Job } from '../../lib/supabase'
 import { Button } from '../ui/Button'
+import { LocationDisplay } from '../maps/LocationDisplay'
 import { 
   Calendar, 
-  MapPin, 
   CheckCircle, 
   Clock, 
   AlertCircle,
@@ -130,9 +130,11 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
 
       {/* Location */}
       {job.location && (
-        <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-          <MapPin size={14} />
-          <span>{job.location.address || `${job.location.lat}, ${job.location.lng}`}</span>
+        <div className="mb-3">
+          <LocationDisplay 
+            location={job.location} 
+            className="text-sm"
+          />
         </div>
       )}
 
