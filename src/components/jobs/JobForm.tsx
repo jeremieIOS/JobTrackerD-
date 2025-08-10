@@ -6,7 +6,7 @@ import { Button } from '../ui/Button'
 import { X } from 'lucide-react'
 
 const jobSchema = z.object({
-  title: z.string().min(1, 'Le titre est obligatoire'),
+  title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   status: z.enum(['not_started', 'in_progress', 'completed', 'blocked', 'cancelled', 'cancelled_by_client', 'no_parking']),
   priority: z.enum(['low', 'medium', 'high']).optional(),
@@ -59,7 +59,7 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">
-            {isEdit ? 'Modifier le job' : 'Nouveau job'}
+            {isEdit ? 'Edit Job' : 'New Job'}
           </h2>
           <button
             onClick={onCancel}
@@ -74,14 +74,14 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
           {/* Title */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Titre *
+              Title *
             </label>
             <input
               {...register('title')}
               type="text"
               id="title"
               className="input-field"
-              placeholder="Nom du job"
+              placeholder="Job name"
             />
             {errors.title && (
               <p className="text-red-600 text-sm mt-1">{errors.title.message}</p>
@@ -98,7 +98,7 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
               id="description"
               rows={3}
               className="input-field"
-              placeholder="Description du job..."
+              placeholder="Job description..."
             />
             {errors.description && (
               <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>
@@ -108,16 +108,16 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
           {/* Status */}
           <div>
             <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-              Statut
+              Status
             </label>
             <select {...register('status')} id="status" className="input-field">
-              <option value="not_started">Non démarré</option>
-              <option value="in_progress">En cours</option>
-              <option value="completed">Terminé</option>
-              <option value="blocked">Bloqué</option>
-              <option value="cancelled">Annulé</option>
-              <option value="cancelled_by_client">Annulé par client</option>
-              <option value="no_parking">Pas de parking</option>
+              <option value="not_started">Not Started</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="blocked">Blocked</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="cancelled_by_client">Cancelled by Client</option>
+              <option value="no_parking">No Parking</option>
             </select>
             {errors.status && (
               <p className="text-red-600 text-sm mt-1">{errors.status.message}</p>
@@ -127,12 +127,12 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
           {/* Priority */}
           <div>
             <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
-              Priorité
+              Priority
             </label>
             <select {...register('priority')} id="priority" className="input-field">
-              <option value="low">Faible</option>
-              <option value="medium">Moyenne</option>
-              <option value="high">Élevée</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
             </select>
             {errors.priority && (
               <p className="text-red-600 text-sm mt-1">{errors.priority.message}</p>
@@ -142,7 +142,7 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
           {/* Due Date */}
           <div>
             <label htmlFor="due_date" className="block text-sm font-medium text-gray-700 mb-1">
-              Date d'échéance
+              Due Date
             </label>
             <input
               {...register('due_date')}
@@ -163,14 +163,14 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
               onClick={onCancel}
               className="flex-1"
             >
-              Annuler
+              Cancel
             </Button>
             <Button
               type="submit"
               loading={isLoading}
               className="flex-1"
             >
-              {isEdit ? 'Modifier' : 'Créer'}
+              {isEdit ? 'Update' : 'Create'}
             </Button>
           </div>
         </form>

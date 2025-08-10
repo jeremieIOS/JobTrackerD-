@@ -21,11 +21,11 @@ export function DashboardPage() {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">
-                Bonjour, {user?.email}
+                Hello, {user?.email}
               </span>
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 <LogOut size={16} />
-                Déconnexion
+                Sign Out
               </Button>
             </div>
           </div>

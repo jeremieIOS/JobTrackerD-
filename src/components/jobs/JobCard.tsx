@@ -11,7 +11,6 @@ import {
   Trash2
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
-import { fr } from 'date-fns/locale'
 
 interface JobCardProps {
   job: Job
@@ -22,46 +21,46 @@ interface JobCardProps {
 
 const statusConfig = {
   not_started: {
-    label: 'Non démarré',
+    label: 'Not Started',
     color: 'bg-gray-100 text-gray-800',
     icon: Clock,
   },
   in_progress: {
-    label: 'En cours',
+    label: 'In Progress',
     color: 'bg-blue-100 text-blue-800',
     icon: Clock,
   },
   completed: {
-    label: 'Terminé',
+    label: 'Completed',
     color: 'bg-green-100 text-green-800',
     icon: CheckCircle,
   },
   blocked: {
-    label: 'Bloqué',
+    label: 'Blocked',
     color: 'bg-red-100 text-red-800',
     icon: AlertCircle,
   },
   cancelled: {
-    label: 'Annulé',
+    label: 'Cancelled',
     color: 'bg-gray-100 text-gray-600',
     icon: AlertCircle,
   },
   cancelled_by_client: {
-    label: 'Annulé par client',
+    label: 'Cancelled by Client',
     color: 'bg-orange-100 text-orange-800',
     icon: AlertCircle,
   },
   no_parking: {
-    label: 'Pas de parking',
+    label: 'No Parking',
     color: 'bg-yellow-100 text-yellow-800',
     icon: AlertCircle,
   },
 }
 
 const priorityConfig = {
-  low: 'Faible',
-  medium: 'Moyenne',
-  high: 'Élevée',
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
 }
 
 export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
@@ -81,7 +80,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
             </span>
             {job.priority && (
               <span className="text-xs text-gray-500">
-                Priorité: {priorityConfig[job.priority]}
+                Priority: {priorityConfig[job.priority]}
               </span>
             )}
           </div>
@@ -99,7 +98,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
               >
                 <Edit size={14} />
-                Modifier
+                Edit
               </button>
               {!job.completed && (
                 <button
@@ -107,7 +106,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
                   className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-700 hover:bg-green-50 rounded"
                 >
                   <CheckCircle size={14} />
-                  Marquer terminé
+                  Mark Complete
                 </button>
               )}
               <button
@@ -115,7 +114,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-700 hover:bg-red-50 rounded"
               >
                 <Trash2 size={14} />
-                Supprimer
+                Delete
               </button>
             </div>
           </div>
@@ -141,18 +140,16 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
       <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-100">
         <div className="flex items-center gap-4">
           <span>
-            Créé {formatDistanceToNow(new Date(job.created_at), { 
-              addSuffix: true, 
-              locale: fr 
+            Created {formatDistanceToNow(new Date(job.created_at), { 
+              addSuffix: true
             })}
           </span>
           {job.due_date && (
             <div className="flex items-center gap-1">
               <Calendar size={12} />
               <span>
-                Échéance {formatDistanceToNow(new Date(job.due_date), { 
-                  addSuffix: true, 
-                  locale: fr 
+                Due {formatDistanceToNow(new Date(job.due_date), { 
+                  addSuffix: true
                 })}
               </span>
             </div>
@@ -161,9 +158,8 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
         
         {job.completed_at && (
           <span className="text-green-600">
-            Terminé {formatDistanceToNow(new Date(job.completed_at), { 
-              addSuffix: true, 
-              locale: fr 
+            Completed {formatDistanceToNow(new Date(job.completed_at), { 
+              addSuffix: true
             })}
           </span>
         )}
