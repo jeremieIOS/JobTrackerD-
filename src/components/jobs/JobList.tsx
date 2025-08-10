@@ -3,10 +3,12 @@ import { useJobs } from '../../hooks/useJobs'
 import type { Job } from '../../lib/supabase'
 import { JobCard } from './JobCard'
 import { JobForm } from './JobForm'
+import { TeamSelector } from '../teams/TeamSelector'
 import { Button } from '../ui/Button'
 import { Plus, Search, Filter } from 'lucide-react'
 
 export function JobList() {
+  const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(undefined)
   const { 
     jobs, 
     isLoading, 
@@ -16,7 +18,7 @@ export function JobList() {
     completeJob,
     isCreating,
     isUpdating 
-  } = useJobs()
+  } = useJobs(selectedTeamId)
 
   const [showForm, setShowForm] = useState(false)
   const [editingJob, setEditingJob] = useState<Job | null>(null)
@@ -78,10 +80,17 @@ export function JobList() {
               {jobs.length} job{jobs.length > 1 ? 's' : ''} total
             </p>
           </div>
-          <Button onClick={() => setShowForm(true)}>
-            <Plus size={16} className="mr-2" />
-            New Job
-          </Button>
+          <div className="flex items-center gap-3">
+            <TeamSelector
+              selectedTeamId={selectedTeamId}
+              onTeamSelect={setSelectedTeamId}
+              className="min-w-[200px]"
+            />
+            <Button onClick={() => setShowForm(true)}>
+              <Plus size={16} className="mr-2" />
+              New Job
+            </Button>
+          </div>
         </div>
 
         {/* Barre de recherche et filtres */}
