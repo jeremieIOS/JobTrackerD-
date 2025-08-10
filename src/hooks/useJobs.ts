@@ -58,14 +58,27 @@ export function useJobs(teamId?: string) {
             team_id: teamId || null, // Assign to current team if specified
           },
         ])
-        .select()
+        .select(`
+          *,
+          created_by_user:users!jobs_created_by_fkey(name, email),
+          team:teams(name)
+        `)
         .single()
 
       if (error) throw error
       return data
     },
-    onSuccess: () => {
+    onSuccess: (newJob) => {
+      // Invalidate all job queries to ensure the new job appears immediately
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      // Also invalidate the specific query for current context
+      queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
+      
+      // Optimistically update the current query
+      queryClient.setQueryData(['jobs', user?.id, teamId], (oldData: Job[] | undefined) => {
+        if (!oldData) return [newJob]
+        return [newJob, ...oldData]
+      })
     },
   })
 
@@ -83,7 +96,9 @@ export function useJobs(teamId?: string) {
       return data
     },
     onSuccess: () => {
+      // Invalidate all job queries to ensure updates appear immediately
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })
 
@@ -94,7 +109,9 @@ export function useJobs(teamId?: string) {
       if (error) throw error
     },
     onSuccess: () => {
+      // Invalidate all job queries to ensure deletions appear immediately
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })
 
@@ -116,7 +133,9 @@ export function useJobs(teamId?: string) {
       return data
     },
     onSuccess: () => {
+      // Invalidate all job queries to ensure completions appear immediately
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })
 
