@@ -4,6 +4,7 @@ import type { Job } from '../../lib/supabase'
 import { JobCard } from './JobCard'
 import { JobForm } from './JobForm'
 import { TeamSelector } from '../teams/TeamSelector'
+import { DebugInfo } from '../debug/DebugInfo'
 import { Button } from '../ui/Button'
 import { Plus, Search, Filter } from 'lucide-react'
 
@@ -171,6 +172,9 @@ export function JobList() {
           isLoading={isCreating || isUpdating}
         />
       )}
+      
+      {/* Debug Info */}
+      <DebugInfo teamId={selectedTeamId} />
     </div>
   )
 }
