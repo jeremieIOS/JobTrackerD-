@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
 import { Button } from '../ui/Button'
 import { MapPin, Crosshair, X, Search } from 'lucide-react'
+import { useGoogleMaps } from '../../hooks/useGoogleMaps'
 
 interface LocationData {
   lat: number
@@ -29,6 +30,9 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
+  // Use optimized Google Maps hook
+  const { geocodeAddress, reverseGeocode, isGoogleMapsLoaded, handleMapError, debounce } = useGoogleMaps()
+
   useEffect(() => {
     if (!GOOGLE_MAPS_API_KEY) {
       setError('Google Maps API key not configured')
@@ -51,7 +55,9 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
       const loader = new Loader({
         apiKey: GOOGLE_MAPS_API_KEY,
         version: 'weekly',
-        libraries: ['places', 'geocoding']
+        libraries: ['places', 'geocoding'],
+        region: 'FR', // Optimisation pour la France
+        language: 'fr' // Interface en français
       })
 
       await loader.load()
@@ -67,6 +73,21 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+        gestureHandling: 'cooperative',
+        // Performance optimizations
+        disableDefaultUI: false,
+        clickableIcons: false,
+        styles: [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          }
+        ]
       })
 
       mapInstanceRef.current = map
@@ -361,19 +382,42 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
         <div className="flex-1 relative">
           {isLoading && (
             <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-2"></div>
-                <p className="text-gray-600">Loading map...</p>
+              <div className="text-center p-6">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Initializing Google Maps</h3>
+                <p className="text-gray-600 text-sm">Loading map with enhanced features...</p>
+                <div className="mt-4 bg-blue-50 rounded-lg p-3">
+                  <p className="text-xs text-blue-700">✨ Optimized for France with address autocomplete</p>
+                </div>
               </div>
             </div>
           )}
           
           {error && (
-            <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                <p className="text-red-600 mb-2">Error loading map</p>
-                <p className="text-gray-500 text-sm">{error}</p>
+            <div className="absolute inset-0 bg-red-50 flex items-center justify-center z-10">
+              <div className="text-center p-6 max-w-md">
+                <MapPin className="w-16 h-16 text-red-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-red-900 mb-3">Google Maps Error</h3>
+                <p className="text-red-700 mb-4 text-sm">{error}</p>
+                
+                <div className="bg-red-100 rounded-lg p-4 mb-4 text-left">
+                  <h4 className="font-semibold text-red-800 mb-2">🛠️ Possible Solutions:</h4>
+                  <ul className="text-xs text-red-700 space-y-1">
+                    <li>• Check Google Maps API key configuration</li>
+                    <li>• Verify API permissions (Maps, Places, Geocoding)</li>
+                    <li>• Ensure proper billing setup in Google Cloud</li>
+                    <li>• Check domain restrictions</li>
+                  </ul>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button onClick={() => initializeMap()} variant="primary" size="sm">
+                    Retry
+                  </Button>
+                  <Button onClick={onClose} variant="secondary" size="sm">
+                    Close
+                  </Button>
+                </div>
               </div>
             </div>
           )}
