@@ -1,5 +1,6 @@
 import type { Job, JobStatus } from '../../lib/supabase'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 
@@ -12,10 +13,12 @@ import {
   Trash2,
   User,
   ChevronDown,
-  Repeat,
+  RotateCw,
   MapPin,
-  ExternalLink
-} from 'lucide-react'
+  ExternalLink,
+  MessageSquare
+} from '@/components/ui/icons'
+
 import { formatDistanceToNow } from 'date-fns'
 import { useState, useEffect, useRef } from 'react'
 
@@ -188,7 +191,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           {/* Recurring indicator */}
           {job.is_recurring && (
             <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-              <Repeat size={12} />
+              <RotateCw className="h-3 w-3 stroke-[1.5]" />
               <span>Recurring</span>
             </div>
           )}
@@ -196,7 +199,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           {/* Generated from recurring job indicator */}
           {job.parent_job_id && (
             <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-              <Repeat size={12} />
+              <RotateCw className="h-3 w-3 stroke-[1.5]" />
               <span>Auto-generated</span>
             </div>
           )}
@@ -206,23 +209,34 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       {/* 5. Separator */}
       <div className="border-t border-gray-200"></div>
 
-      {/* 6. Priority + Location */}
+      {/* 6. Priority + Location + Notes */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
-        {/* Priority */}
-        <div className="flex items-center gap-2 text-sm">
-          {job.priority ? (
-            <>
-              <span className="text-gray-500">Priority:</span>
-              <span className={`font-medium ${
-                job.priority === 'high' ? 'text-red-600' : 
-                job.priority === 'medium' ? 'text-yellow-600' : 
-                'text-green-600'
-              }`}>
-                {priorityConfig[job.priority]}
-              </span>
-            </>
-          ) : (
-            <span className="text-gray-400">No priority set</span>
+        {/* Priority + Notes Indicator */}
+        <div className="flex items-center gap-3 text-sm">
+          {/* Priority */}
+          <div className="flex items-center gap-2">
+            {job.priority ? (
+              <>
+                <span className="text-gray-500">Priority:</span>
+                <span className={`font-medium ${
+                  job.priority === 'high' ? 'text-red-600' : 
+                  job.priority === 'medium' ? 'text-yellow-600' : 
+                  'text-green-600'
+                }`}>
+                  {priorityConfig[job.priority]}
+                </span>
+              </>
+            ) : (
+              <span className="text-gray-400">No priority set</span>
+            )}
+          </div>
+          
+          {/* Notes Indicator */}
+          {notesCount > 0 && (
+            <Badge variant="secondary" className="gap-1 h-5">
+              <MessageSquare className="h-3 w-3 stroke-[1.5]" />
+              <span className="text-xs">{notesCount}</span>
+            </Badge>
           )}
         </div>
 
