@@ -1,6 +1,5 @@
 import type { Job, JobStatus } from '../../lib/supabase'
 import { Button } from '../ui/Button'
-import { LocationDisplay } from '../maps/LocationDisplay'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 

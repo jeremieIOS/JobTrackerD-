@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 // Cache pour éviter les appels répétés
 const geocodeCache = new Map<string, any>()
-const autocompleteCache = new Map<string, any>()
+// const autocompleteCache = new Map<string, any>() // Commented for build fix
 
 export function useGoogleMaps() {
   // Debounce function

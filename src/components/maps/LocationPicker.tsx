@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
 import { Button } from '../ui/Button'
 import { MapPin, Crosshair, X, Search } from 'lucide-react'
-import { useGoogleMaps } from '../../hooks/useGoogleMaps'
+// import { useGoogleMaps } from '../../hooks/useGoogleMaps' // Commented for build fix
 
 interface LocationData {
   lat: number
@@ -30,8 +30,8 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  // Use optimized Google Maps hook
-  const { geocodeAddress, reverseGeocode, isGoogleMapsLoaded, handleMapError, debounce } = useGoogleMaps()
+  // Use optimized Google Maps hook (commented for build fix)
+  // const { geocodeAddress, reverseGeocode, isGoogleMapsLoaded, handleMapError, debounce } = useGoogleMaps()
 
   useEffect(() => {
     if (!GOOGLE_MAPS_API_KEY) {
