@@ -1,5 +1,5 @@
 import { Bell, User, Plus, Briefcase, Users, BarChart3, Settings } from '@/components/ui/icons'
-import { defaultIconSize } from '@/components/ui/icons'
+import { defaultOutlineIcon } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -53,7 +53,7 @@ export function DesktopNav({
           <div className="flex items-center gap-4">
             {/* Create Job Button */}
             <Button onClick={onCreateJob} className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className={defaultOutlineIcon} />
               Create Job
             </Button>
 
@@ -64,7 +64,7 @@ export function DesktopNav({
               onClick={onToggleNotifications}
               className="relative"
             >
-              <Bell className={defaultIconSize} />
+              <Bell className={defaultOutlineIcon} />
               {unreadCount > 0 && (
                 <Badge 
                   variant="destructive" 
@@ -79,7 +79,7 @@ export function DesktopNav({
             <div className="flex items-center gap-3 pl-4 border-l">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  <User className="h-4 w-4" />
+                  <User className={defaultOutlineIcon} />
                 </AvatarFallback>
               </Avatar>
               <div className="text-sm">
@@ -102,7 +102,7 @@ export function DesktopNav({
                   value={tab.id}
                   className="flex items-center gap-2 py-4 px-2 border-b-2 border-transparent data-[state=active]:border-primary rounded-none bg-transparent"
                 >
-                  <tab.icon className={defaultIconSize} />
+                  <tab.icon className={defaultOutlineIcon} />
                   {tab.label}
                 </TabsTrigger>
               ))}

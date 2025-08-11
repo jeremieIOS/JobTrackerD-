@@ -135,9 +135,19 @@ export {
 import { cn } from '@/lib/utils'
 
 /**
- * Default icon size for Shadcn/ui consistency
+ * Default icon size for Shadcn/ui consistency with outline styling
  */
 export const defaultIconSize = "h-4 w-4"
+
+/**
+ * Outline icon styling for simple, clean appearance
+ */
+export const outlineIconStyle = "stroke-[1.5]" // Thin outline stroke
+
+/**
+ * Combined default classes for outline icons
+ */
+export const defaultOutlineIcon = `${defaultIconSize} ${outlineIconStyle}`
 
 /**
  * Icon size variants following Shadcn conventions
@@ -158,8 +168,18 @@ export function getIconSize(size: keyof typeof iconSizes = 'default') {
 }
 
 /**
- * Utility to combine icon size with additional classes
+ * Utility to combine icon size with additional classes and outline styling
  */
-export function iconClass(size: keyof typeof iconSizes = 'default', additionalClasses?: string) {
-  return cn(iconSizes[size], additionalClasses)
+export function iconClass(size: keyof typeof iconSizes = 'default', additionalClasses?: string, useOutline: boolean = true) {
+  const baseClasses = useOutline 
+    ? cn(iconSizes[size], outlineIconStyle)
+    : iconSizes[size]
+  return cn(baseClasses, additionalClasses)
+}
+
+/**
+ * Simple outline icon utility - most common use case
+ */
+export function outlineIcon(size: keyof typeof iconSizes = 'default', additionalClasses?: string) {
+  return iconClass(size, additionalClasses, true)
 }

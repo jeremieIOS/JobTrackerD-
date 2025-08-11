@@ -4,20 +4,23 @@
 
 Toutes les icônes sont centralisées dans `src/components/ui/icons.tsx` et suivent les conventions Shadcn/ui.
 
-## 🎨 **Utilisation Standard**
+## 🎨 **Utilisation Standard (Outline Style)**
 
 ```tsx
 import { Bell, Menu, Plus, User } from '@/components/ui/icons'
-import { defaultIconSize, iconSizes, iconClass } from '@/components/ui/icons'
+import { defaultOutlineIcon, outlineIcon, iconClass } from '@/components/ui/icons'
 
-// ✅ Utilisation recommandée avec taille par défaut (16px)
-<Bell className={defaultIconSize} />
+// ✅ Utilisation recommandée avec style outline (16px + stroke-[1.5])
+<Bell className={defaultOutlineIcon} />
 
-// ✅ Utilisation avec taille spécifique
-<Menu className={iconSizes.lg} />
+// ✅ Utilisation avec taille spécifique et outline
+<Menu className={outlineIcon('lg')} />
 
 // ✅ Utilisation avec utilitaire et classes additionnelles
-<Plus className={iconClass('sm', 'text-green-600')} />
+<Plus className={outlineIcon('sm', 'text-green-600')} />
+
+// ✅ Sans outline (si nécessaire)
+<User className={iconClass('default', 'text-blue-600', false)} />
 ```
 
 ## 📏 **Tailles Disponibles**

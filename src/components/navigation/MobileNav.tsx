@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type React from 'react'
 import { Bell, Menu, Plus, User, Briefcase, Users, BarChart3, Settings } from '@/components/ui/icons'
-import { defaultIconSize } from '@/components/ui/icons'
+import { defaultOutlineIcon } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -63,7 +63,7 @@ export function MobileNav({
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Menu className={defaultIconSize} />
+                  <Menu className={defaultOutlineIcon} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-80">
@@ -89,7 +89,7 @@ export function MobileNav({
                         className="w-full justify-start gap-3"
                         onClick={() => onTabChange(item.id)}
                       >
-                        <item.icon className={defaultIconSize} />
+                        <item.icon className={defaultOutlineIcon} />
                         <span>{item.label}</span>
                         {item.badge && (
                           <Badge variant="secondary" className="ml-auto">
@@ -154,7 +154,7 @@ export function MobileNav({
               onClick={onToggleNotifications}
               className="relative"
             >
-              <Bell className={defaultIconSize} />
+              <Bell className={defaultOutlineIcon} />
               {unreadCount > 0 && (
                 <Badge 
                   variant="destructive" 
@@ -168,7 +168,7 @@ export function MobileNav({
             {/* Profile */}
             <Avatar className="h-8 w-8">
               <AvatarFallback>
-                <User className="h-4 w-4" />
+                <User className={defaultOutlineIcon} />
               </AvatarFallback>
             </Avatar>
           </div>
