@@ -28,28 +28,28 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, icon, description, trend }: MetricCardProps) {
   return (
-    <Card>
+    <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg text-primary">
+          <div className="p-3 bg-primary/10 rounded-xl text-primary">
             {icon}
           </div>
           <h3 className="font-medium text-foreground">{title}</h3>
         </div>
         {trend && (
-          <div className={`flex items-center gap-1 text-sm ${
-            trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+          <div className={`flex items-center gap-1 text-sm font-medium ${
+            trend.isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
           }`}>
-            <TrendingUp size={14} />
+            <TrendingUp size={14} className={trend.isPositive ? '' : 'rotate-180'} />
             <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
           </div>
         )}
       </div>
-      <div className="mb-2">
-        <span className="text-2xl font-bold text-foreground">{value}</span>
+      <div className="mb-3">
+        <span className="text-3xl font-bold text-foreground">{value}</span>
       </div>
       {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
       )}
     </Card>
   )
@@ -107,13 +107,13 @@ function StatusDistribution({ jobs }: StatusDistributionProps) {
                   <span className="text-sm font-medium text-foreground">
                     {config.label}
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground font-medium">
                     {count} ({percentage.toFixed(1)}%)
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                   <div
-                    className={`h-2 rounded-full ${config.color}`}
+                    className={`h-3 rounded-full ${config.color} transition-all duration-300 ease-out`}
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
@@ -150,27 +150,29 @@ function RecentActivity({ jobs }: RecentActivityProps) {
       ) : (
         <div className="space-y-3">
           {recentJobs.map((job) => (
-            <div key={job.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <div className={`w-2 h-2 rounded-full ${
-                job.status === 'completed' ? 'bg-green-500' :
+            <div key={job.id} className="flex items-center gap-4 p-4 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border/50 transition-colors">
+              <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                job.status === 'completed' ? 'bg-emerald-500' :
                 job.status === 'cancelled' ? 'bg-red-500' :
-                job.status === 'no_parking' ? 'bg-gray-500' :
-                'bg-yellow-500'
+                job.status === 'no_parking' ? 'bg-muted-foreground' :
+                'bg-amber-500'
               }`} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium text-foreground truncate mb-1">
                   {job.title}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {new Date(job.created_at).toLocaleDateString()} • {job.status.replace('_', ' ')}
                 </p>
               </div>
-              {job.is_recurring && (
-                <Repeat size={14} className="text-purple-600" />
-              )}
-              {job.location && (
-                <MapPin size={14} className="text-blue-600" />
-              )}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {job.is_recurring && (
+                  <Repeat size={16} className="text-purple-600 dark:text-purple-400" />
+                )}
+                {job.location && (
+                  <MapPin size={16} className="text-blue-600 dark:text-blue-400" />
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -222,7 +224,7 @@ export function AnalyticsDashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     )
   }
@@ -240,7 +242,7 @@ export function AnalyticsDashboard() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Analytics Dashboard</h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Track your productivity and job management insights
         </p>
       </div>
@@ -291,28 +293,32 @@ export function AnalyticsDashboard() {
 
       {/* Recurring Jobs Insight */}
       {analytics.recurringJobs > 0 && (
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg border border-purple-200">
-          <div className="flex items-center gap-3 mb-3">
-            <Repeat className="text-purple-600" size={24} />
+        <Card className="p-6 bg-gradient-to-r from-purple-500/5 to-blue-500/5 border-purple-500/20">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-purple-500/10 rounded-lg">
+              <Repeat className="text-purple-600 dark:text-purple-400" size={20} />
+            </div>
             <h3 className="font-semibold text-foreground">Recurring Jobs Insight</h3>
           </div>
-          <p className="text-foreground mb-2">
-            You have <span className="font-semibold text-purple-600">{analytics.recurringJobs}</span> recurring job templates 
+          <p className="text-foreground mb-3 leading-relaxed">
+            You have <span className="font-semibold text-purple-600 dark:text-purple-400">{analytics.recurringJobs}</span> recurring job templates 
             helping automate your workflow.
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Recurring jobs save time by automatically creating instances based on your schedule.
           </p>
-        </div>
+        </Card>
       )}
 
       {/* Productivity Tip */}
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
-        <div className="flex items-center gap-3 mb-3">
-          <TrendingUp className="text-green-600" size={24} />
+      <Card className="p-6 bg-gradient-to-r from-emerald-500/5 to-green-500/5 border-emerald-500/20">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-emerald-500/10 rounded-lg">
+            <TrendingUp className="text-emerald-600 dark:text-emerald-400" size={20} />
+          </div>
           <h3 className="font-semibold text-foreground">Productivity Tip</h3>
         </div>
-        <p className="text-foreground mb-2">
+        <p className="text-foreground mb-3 leading-relaxed">
           {analytics.completionRate >= 80 ? 
             "Excellent job! You're maintaining a high completion rate." :
             analytics.completionRate >= 60 ?
@@ -320,13 +326,13 @@ export function AnalyticsDashboard() {
             "Focus on completing existing jobs before creating new ones to improve your completion rate."
           }
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           {analytics.jobsWithLocation > 0 ? 
             "Adding locations to jobs helps with route planning and efficiency." :
             "Try adding locations to your jobs for better organization and route planning."
           }
         </p>
-      </div>
+      </Card>
     </div>
   )
 }
