@@ -5,7 +5,6 @@ import { z } from 'zod'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Mail, Lock } from '@/components/ui/icons'
-import { defaultIconSize } from '@/components/ui/icons'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email'),

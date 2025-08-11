@@ -1,4 +1,4 @@
-import { Bell, User, Plus } from '@/components/ui/icons'
+import { Bell, User, Plus, Briefcase, Users, BarChart3, Settings } from '@/components/ui/icons'
 import { defaultIconSize } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -24,11 +24,11 @@ export function DesktopNav({
   const { user } = useAuth()
   const { data: unreadCount = 0 } = useUnreadNotificationsCount()
 
-  const tabs = [
-    { id: 'jobs', label: 'Jobs', icon: '📋' },
-    { id: 'teams', label: 'Teams', icon: '👥' },
-    { id: 'analytics', label: 'Analytics', icon: '📊' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
+  const tabs: Array<{ id: string; label: string; icon: React.ComponentType<{ className?: string }> }> = [
+    { id: 'jobs', label: 'Jobs', icon: Briefcase },
+    { id: 'teams', label: 'Teams', icon: Users },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
   return (
@@ -102,7 +102,7 @@ export function DesktopNav({
                   value={tab.id}
                   className="flex items-center gap-2 py-4 px-2 border-b-2 border-transparent data-[state=active]:border-primary rounded-none bg-transparent"
                 >
-                  <span>{tab.icon}</span>
+                  <tab.icon className={defaultIconSize} />
                   {tab.label}
                 </TabsTrigger>
               ))}

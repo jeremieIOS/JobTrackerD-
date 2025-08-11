@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Bell, Menu, Plus, User } from '@/components/ui/icons'
+import type React from 'react'
+import { Bell, Menu, Plus, User, Briefcase, Users, BarChart3, Settings } from '@/components/ui/icons'
 import { defaultIconSize } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,7 +21,7 @@ interface MobileNavProps {
 interface NavItem {
   id: string
   label: string
-  icon: string
+  icon: React.ComponentType<{ className?: string }>
   badge?: number
 }
 
@@ -41,10 +42,10 @@ export function MobileNav({
   }, [activeTab])
 
   const navItems: NavItem[] = [
-    { id: 'jobs', label: 'Jobs', icon: '📋' },
-    { id: 'teams', label: 'Teams', icon: '👥' },
-    { id: 'analytics', label: 'Analytics', icon: '📊' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
+    { id: 'jobs', label: 'Jobs', icon: Briefcase },
+    { id: 'teams', label: 'Teams', icon: Users },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ]
 
   const getPageTitle = () => {
@@ -88,7 +89,7 @@ export function MobileNav({
                         className="w-full justify-start gap-3"
                         onClick={() => onTabChange(item.id)}
                       >
-                        <span className="text-lg">{item.icon}</span>
+                        <item.icon className={defaultIconSize} />
                         <span>{item.label}</span>
                         {item.badge && (
                           <Badge variant="secondary" className="ml-auto">
