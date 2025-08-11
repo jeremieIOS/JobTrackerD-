@@ -82,8 +82,8 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
 
   return (
     <div className="card hover:shadow-md transition-shadow duration-200">
-      {/* Header with Title and Menu */}
-      <div className="flex items-start justify-between mb-4">
+      {/* 1. Job title + action */}
+      <div className="flex items-start justify-between py-3">
         <h3 className="font-semibold text-gray-900 text-lg">{job.title}</h3>
         
         {/* Actions dropdown */}
@@ -121,52 +121,43 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         </div>
       </div>
 
-      {/* Creator info - Right under title */}
-      {job.created_by_user && (
-        <div className="flex items-center gap-1 mb-4 text-sm text-gray-500">
-          <User size={14} />
-          <span>Created by {job.created_by_user.name}</span>
-        </div>
-      )}
-
-      {/* Two column layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        {/* Left Column */}
-        <div className="space-y-3">
-          {/* Creation time */}
+      {/* 2. Created by + when created */}
+      <div className="flex items-center justify-between py-3">
+        {job.created_by_user && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Clock size={14} />
-            <span>{formatDistanceToNow(new Date(job.created_at), { addSuffix: true })}</span>
+            <User size={14} />
+            <span>Created by {job.created_by_user.name}</span>
           </div>
+        )}
+        <div className="flex items-center gap-1 text-sm text-gray-500">
+          <Clock size={14} />
+          <span>{formatDistanceToNow(new Date(job.created_at), { addSuffix: true })}</span>
+        </div>
+      </div>
 
-          {/* Due date */}
-          {job.due_date && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+      {/* 3. Separator */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* 4. Due date + badge if recurring */}
+      <div className="flex items-center justify-between py-3">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          {job.due_date ? (
+            <>
               <Calendar size={14} />
               <span>Due {formatDistanceToNow(new Date(job.due_date), { addSuffix: true })}</span>
-            </div>
-          )}
-
-          {/* Priority */}
-          {job.priority && (
-            <div className="text-sm">
-              <span className="text-gray-500">Priority: </span>
-              <span className={`font-medium ${
-                job.priority === 'high' ? 'text-red-600' : 
-                job.priority === 'medium' ? 'text-yellow-600' : 
-                'text-green-600'
-              }`}>
-                {priorityConfig[job.priority]}
-              </span>
-            </div>
+            </>
+          ) : (
+            <>
+              <Calendar size={14} />
+              <span className="text-gray-400">No due date</span>
+            </>
           )}
         </div>
-
-        {/* Right Column */}
-        <div className="space-y-3">
+        
+        <div className="flex items-center gap-2">
           {/* Recurring indicator */}
           {job.is_recurring && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium w-fit">
+            <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
               <Repeat size={12} />
               <span>Recurring</span>
             </div>
@@ -174,46 +165,80 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
 
           {/* Generated from recurring job indicator */}
           {job.parent_job_id && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium w-fit">
+            <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
               <Repeat size={12} />
               <span>Auto-generated</span>
-            </div>
-          )}
-
-          {/* Location */}
-          {job.location && (
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin size={14} />
-                <span>
-                  {job.location.lat.toFixed(4)}, {job.location.lng.toFixed(4)}
-                </span>
-              </div>
-              <a
-                href={`https://www.google.com/maps?q=${job.location.lat},${job.location.lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 ml-5"
-              >
-                <ExternalLink size={12} />
-                <span>Open in Maps</span>
-              </a>
             </div>
           )}
         </div>
       </div>
 
-      {/* Description */}
-      {job.description && (
-        <div className="mb-4">
+      {/* 5. Separator */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* 6. Priority + Location */}
+      <div className="flex items-center justify-between py-3">
+        {/* Priority */}
+        <div className="flex items-center gap-2 text-sm">
+          {job.priority ? (
+            <>
+              <span className="text-gray-500">Priority:</span>
+              <span className={`font-medium ${
+                job.priority === 'high' ? 'text-red-600' : 
+                job.priority === 'medium' ? 'text-yellow-600' : 
+                'text-green-600'
+              }`}>
+                {priorityConfig[job.priority]}
+              </span>
+            </>
+          ) : (
+            <span className="text-gray-400">No priority set</span>
+          )}
+        </div>
+
+        {/* Location */}
+        <div className="flex items-center gap-2">
+          {job.location ? (
+            <>
+              <div className="flex items-center gap-1 text-sm text-gray-600">
+                <MapPin size={14} />
+                <span>{job.location.lat.toFixed(4)}, {job.location.lng.toFixed(4)}</span>
+              </div>
+              <a
+                href={`https://www.google.com/maps?q=${job.location.lat},${job.location.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+              >
+                <ExternalLink size={12} />
+                <span>Open in Maps</span>
+              </a>
+            </>
+          ) : (
+            <span className="text-gray-400 text-sm">No location</span>
+          )}
+        </div>
+      </div>
+
+      {/* 7. Separator */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* 8. Description */}
+      <div className="py-3">
+        {job.description ? (
           <p className="text-gray-700 text-sm bg-gray-50 p-3 rounded-lg">
             {job.description}
           </p>
-        </div>
-      )}
+        ) : (
+          <p className="text-gray-400 text-sm italic">No description</p>
+        )}
+      </div>
 
-      {/* Status - Bottom center */}
-      <div className="flex justify-center mb-4">
+      {/* 9. Separator */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* 10. Status */}
+      <div className="flex justify-center py-3">
         <div className="relative">
           <button
             onClick={() => setShowStatusDropdown(!showStatusDropdown)}
@@ -244,13 +269,18 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         </div>
       </div>
 
-      {/* Notes Section */}
-      <NotesSection
-        jobId={job.id}
-        isExpanded={showNotes}
-        onToggle={() => setShowNotes(!showNotes)}
-        notesCount={notesCount}
-      />
+      {/* 11. Separator */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* 12. Note */}
+      <div className="pt-3">
+        <NotesSection
+          jobId={job.id}
+          isExpanded={showNotes}
+          onToggle={() => setShowNotes(!showNotes)}
+          notesCount={notesCount}
+        />
+      </div>
     </div>
   )
 }
