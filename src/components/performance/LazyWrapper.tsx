@@ -1,4 +1,5 @@
-import { Suspense, ReactNode } from 'react'
+import { Suspense } from 'react'
+import type { ReactNode } from 'react'
 import { ErrorBoundary } from '../error/ErrorBoundary'
 import { Loader2 } from 'lucide-react'
 

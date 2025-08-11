@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Control, Controller } from 'react-hook-form'
-import { RecurrencePattern, RecurrenceType } from '../../lib/supabase'
-import { Calendar, Repeat, Clock } from 'lucide-react'
+import type { Control } from 'react-hook-form'
+import type { RecurrencePattern, RecurrenceType } from '../../lib/supabase'
+import { Repeat, Clock } from 'lucide-react'
 
 interface RecurrenceSettingsProps {
-  control: Control<any>
+  control?: Control<any>
   value?: RecurrencePattern | null
   onChange: (pattern: RecurrencePattern | null) => void
 }

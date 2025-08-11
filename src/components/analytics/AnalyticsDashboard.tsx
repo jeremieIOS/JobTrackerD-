@@ -1,4 +1,3 @@
-import { useAuth } from '../../hooks/useAuth'
 import { useJobs } from '../../hooks/useJobs'
 import { useTeams } from '../../hooks/useTeams'
 import { JobsTimeline } from './JobsTimeline'
@@ -9,7 +8,6 @@ import {
   Users, 
   MapPin, 
   Repeat,
-  Calendar,
   Target,
   BarChart3
 } from 'lucide-react'
@@ -181,9 +179,8 @@ function RecentActivity({ jobs }: RecentActivityProps) {
 }
 
 export function AnalyticsDashboard() {
-  const { user } = useAuth()
   const { jobs, isLoading } = useJobs()
-  const { teams } = useTeams()
+  const { data: userTeams } = useTeams()
 
   const analytics = useMemo(() => {
     if (!jobs) return null
@@ -269,7 +266,7 @@ export function AnalyticsDashboard() {
         
         <MetricCard
           title="Teams"
-          value={teams?.length || 0}
+          value={userTeams?.length || 0}
           icon={<Users size={20} />}
           description="Active teams"
         />

@@ -57,7 +57,6 @@ const priorityConfig = {
 
 export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: JobCardProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false)
-  const [showMenu, setShowMenu] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
   const status = statusConfig[job.status as keyof typeof statusConfig]
   const StatusIcon = status.icon

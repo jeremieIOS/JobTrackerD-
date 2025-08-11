@@ -95,46 +95,46 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <Routes>
-          <Route
-            path="/auth"
-            element={
-              <PublicRoute>
-                <AuthPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/jobs/new"
-            element={
-              <ProtectedRoute>
-                <JobFormPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/jobs/:id/edit"
-            element={
-              <ProtectedRoute>
-                <JobFormPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-        
-        {/* System notifications */}
-        <UpdateNotification />
-        <InstallPrompt />
-      </Router>
-    </QueryClientProvider>
+            <Route
+              path="/auth"
+              element={
+                <PublicRoute>
+                  <AuthPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/new"
+              element={
+                <ProtectedRoute>
+                  <JobFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <JobFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+          
+          {/* System notifications */}
+          <UpdateNotification />
+          <InstallPrompt />
+        </Router>
+      </QueryClientProvider>
     </ErrorBoundary>
   )
 }
