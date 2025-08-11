@@ -326,49 +326,6 @@ export function AnalyticsDashboard() {
 
       {/* Timeline */}
       <JobsTimeline jobs={jobs || []} />
-
-      {/* Recurring Jobs Insight */}
-      {analytics.recurringJobs > 0 && (
-        <Card className="p-6 bg-gradient-to-r from-purple-500/5 to-blue-500/5 border-purple-500/20">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-purple-500/10 rounded-lg">
-              <Repeat className="text-purple-600 dark:text-purple-400" size={20} />
-            </div>
-            <h3 className="font-semibold text-foreground">Recurring Jobs Insight</h3>
-          </div>
-          <p className="text-foreground mb-3 leading-relaxed">
-            You have <span className="font-semibold text-purple-600 dark:text-purple-400">{analytics.recurringJobs}</span> recurring job templates 
-            helping automate your workflow.
-          </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Recurring jobs save time by automatically creating instances based on your schedule.
-          </p>
-        </Card>
-      )}
-
-      {/* Productivity Tip */}
-      <Card className="p-6 bg-gradient-to-r from-emerald-500/5 to-green-500/5 border-emerald-500/20">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-emerald-500/10 rounded-lg">
-            <TrendingUp className="text-emerald-600 dark:text-emerald-400" size={20} />
-          </div>
-          <h3 className="font-semibold text-foreground">Productivity Tip</h3>
-        </div>
-        <p className="text-foreground mb-3 leading-relaxed">
-          {analytics.completionRate >= 80 ? 
-            "Excellent job! You're maintaining a high completion rate." :
-            analytics.completionRate >= 60 ?
-            "Good progress! Consider breaking down larger tasks into smaller, manageable jobs." :
-            "Focus on completing existing jobs before creating new ones to improve your completion rate."
-          }
-        </p>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          {analytics.jobsWithLocation > 0 ? 
-            "Adding locations to jobs helps with route planning and efficiency." :
-            "Try adding locations to your jobs for better organization and route planning."
-          }
-        </p>
-      </Card>
     </div>
   )
 }

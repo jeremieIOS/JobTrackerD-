@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Calendar } from 'lucide-react'
+import { Card } from '@/components/ui/card'
 import type { Job } from '../../lib/supabase'
 
 interface JobsTimelineProps {
@@ -40,28 +41,28 @@ export function JobsTimeline({ jobs }: JobsTimelineProps) {
   const maxCount = Math.max(...timelineData.map(d => d.count), 1)
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+    <Card className="p-6">
+      <h3 className="font-semibold text-foreground mb-6 flex items-center gap-2">
         <Calendar size={20} />
         Jobs Created (Last 7 Days)
       </h3>
       
-      <div className="space-y-4">
+      <div className="space-y-5">
         {timelineData.map((day) => (
-          <div key={day.date} className="flex items-center gap-4">
-            <div className="w-12 text-sm text-gray-600 font-medium">
+          <div key={day.date} className="flex items-center gap-6">
+            <div className="w-14 text-sm text-muted-foreground font-medium text-center">
               {day.dayName}
             </div>
-            <div className="flex-1 flex items-center gap-3">
-              <div className="flex-1 bg-gray-200 rounded-full h-2">
+            <div className="flex-1 flex items-center gap-4">
+              <div className="flex-1 bg-muted rounded-full h-3 overflow-hidden">
                 <div
-                  className="h-2 bg-blue-500 rounded-full transition-all duration-300"
+                  className="h-3 bg-primary rounded-full transition-all duration-500 ease-out"
                   style={{ 
                     width: `${maxCount > 0 ? (day.count / maxCount) * 100 : 0}%` 
                   }}
                 />
               </div>
-              <div className="w-8 text-sm text-gray-700 text-right">
+              <div className="w-10 text-sm text-foreground font-semibold text-right">
                 {day.count}
               </div>
             </div>
@@ -70,10 +71,12 @@ export function JobsTimeline({ jobs }: JobsTimelineProps) {
       </div>
       
       {timelineData.every(d => d.count === 0) && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No jobs created in the last 7 days</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center mt-6">
+          <Calendar className="w-12 h-12 text-muted-foreground/50 mb-4" />
+          <p className="text-muted-foreground font-medium">No jobs created recently</p>
+          <p className="text-sm text-muted-foreground/70 mt-1">Activity will show up here as you create jobs</p>
         </div>
       )}
-    </div>
+    </Card>
   )
 }
