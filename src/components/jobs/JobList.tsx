@@ -1,28 +1,23 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useJobs } from '../../hooks/useJobs'
-import type { Job } from '../../lib/supabase'
+import type { Job, JobStatus } from '../../lib/supabase'
 import { JobCard } from './JobCard'
-import { JobForm } from './JobForm'
 import { TeamSelector } from '../teams/TeamSelector'
-import { DebugInfo } from '../debug/DebugInfo'
 import { Button } from '../ui/Button'
 import { Plus, Search, Filter } from 'lucide-react'
 
 export function JobList() {
+  const navigate = useNavigate()
   const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(undefined)
   const { 
     jobs, 
     isLoading, 
-    createJob, 
     updateJob, 
     deleteJob, 
-    completeJob,
-    isCreating,
-    isUpdating 
+    completeJob
   } = useJobs(selectedTeamId)
 
-  const [showForm, setShowForm] = useState(false)
-  const [editingJob, setEditingJob] = useState<Job | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
@@ -36,24 +31,16 @@ export function JobList() {
     return matchesSearch && matchesStatus
   })
 
-  const handleSubmit = (data: Partial<Job>) => {
-    if (editingJob) {
-      updateJob({ id: editingJob.id, updates: data })
-    } else {
-      createJob(data)
-    }
-    setShowForm(false)
-    setEditingJob(null)
-  }
-
   const handleEdit = (job: Job) => {
-    setEditingJob(job)
-    setShowForm(true)
+    navigate(`/jobs/${job.id}/edit`)
   }
 
-  const handleCancel = () => {
-    setShowForm(false)
-    setEditingJob(null)
+  const handleCreateNew = () => {
+    navigate('/jobs/new')
+  }
+
+  const handleStatusChange = (id: string, status: JobStatus) => {
+    updateJob({ id, updates: { status } })
   }
 
   const handleDelete = (id: string) => {
@@ -87,7 +74,7 @@ export function JobList() {
               onTeamSelect={setSelectedTeamId}
               className="min-w-[200px]"
             />
-            <Button onClick={() => setShowForm(true)}>
+            <Button onClick={handleCreateNew}>
               <Plus size={16} className="mr-2" />
               New Job
             </Button>
@@ -116,11 +103,8 @@ export function JobList() {
             >
               <option value="all">All Statuses</option>
               <option value="not_started">Not Started</option>
-              <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
-              <option value="blocked">Blocked</option>
               <option value="cancelled">Cancelled</option>
-              <option value="cancelled_by_client">Cancelled by Client</option>
               <option value="no_parking">No Parking</option>
             </select>
           </div>
@@ -143,7 +127,7 @@ export function JobList() {
             }
           </p>
           {jobs.length === 0 && (
-            <Button onClick={() => setShowForm(true)}>
+            <Button onClick={handleCreateNew}>
               <Plus size={16} className="mr-2" />
               Create my first job
             </Button>
@@ -152,29 +136,19 @@ export function JobList() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onComplete={completeJob}
-            />
+                          <JobCard
+                key={job.id}
+                job={job}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onComplete={completeJob}
+                onStatusChange={handleStatusChange}
+              />
           ))}
         </div>
       )}
 
-      {/* Formulaire modal */}
-      {showForm && (
-        <JobForm
-          job={editingJob || undefined}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isLoading={isCreating || isUpdating}
-        />
-      )}
-      
-      {/* Debug Info */}
-      <DebugInfo teamId={selectedTeamId} />
+      {/* Debug Info - Completed and removed */}
     </div>
   )
 }

@@ -20,8 +20,7 @@ export function useJobs(teamId?: string) {
         .from('jobs')
         .select(`
           *,
-          created_by_user:users!jobs_created_by_fkey(name, email),
-          team:teams(name)
+          created_by_user:users!jobs_created_by_fkey(name, email)
         `)
 
       if (teamId) {
@@ -38,6 +37,8 @@ export function useJobs(teamId?: string) {
       return data as Job[]
     },
     enabled: !!user,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   })
 
 
@@ -58,20 +59,14 @@ export function useJobs(teamId?: string) {
             team_id: teamId || null, // Assign to current team if specified
           },
         ])
-        .select(`
-          *,
-          created_by_user:users!jobs_created_by_fkey(name, email),
-          team:teams(name)
-        `)
+        .select('*')
         .single()
 
       if (error) throw error
       return data
     },
     onSuccess: (newJob) => {
-      // Invalidate all job queries to ensure the new job appears immediately
-      queryClient.invalidateQueries({ queryKey: ['jobs'] })
-      // Also invalidate the specific query for current context
+      // Only invalidate the specific query for current context
       queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
       
       // Optimistically update the current query
@@ -96,8 +91,7 @@ export function useJobs(teamId?: string) {
       return data
     },
     onSuccess: () => {
-      // Invalidate all job queries to ensure updates appear immediately
-      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      // Only invalidate the specific query for current context
       queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })
@@ -109,8 +103,7 @@ export function useJobs(teamId?: string) {
       if (error) throw error
     },
     onSuccess: () => {
-      // Invalidate all job queries to ensure deletions appear immediately
-      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      // Only invalidate the specific query for current context
       queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })
@@ -133,8 +126,7 @@ export function useJobs(teamId?: string) {
       return data
     },
     onSuccess: () => {
-      // Invalidate all job queries to ensure completions appear immediately
-      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      // Only invalidate the specific query for current context
       queryClient.invalidateQueries({ queryKey: ['jobs', user?.id, teamId] })
     },
   })

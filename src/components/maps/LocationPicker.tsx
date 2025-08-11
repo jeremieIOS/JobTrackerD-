@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
 import { Button } from '../ui/Button'
-import { MapPin, Crosshair, X } from 'lucide-react'
+import { MapPin, Crosshair, X, Search } from 'lucide-react'
 
 interface LocationData {
   lat: number
@@ -22,9 +22,12 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [address, setAddress] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markerRef = useRef<google.maps.Marker | null>(null)
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!GOOGLE_MAPS_API_KEY) {
@@ -34,6 +37,13 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
     }
 
     initializeMap()
+
+    // Cleanup function
+    return () => {
+      if (autocompleteRef.current) {
+        google.maps.event.clearInstanceListeners(autocompleteRef.current)
+      }
+    }
   }, [])
 
   const initializeMap = async () => {
@@ -74,7 +84,12 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
       // Set initial location
       if (initialLocation) {
         setLocation(initialLocation)
-        geocodeLatLng(initialLocation.lat, initialLocation.lng)
+        if (initialLocation.address) {
+          setAddress(initialLocation.address)
+          setSearchInput(initialLocation.address)
+        } else {
+          geocodeLatLng(initialLocation.lat, initialLocation.lng)
+        }
       }
 
       // Handle marker drag
@@ -103,11 +118,98 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
         }
       })
 
+      // Initialize autocomplete after map is loaded
+      initializeAutocomplete()
+      
       setIsLoading(false)
     } catch (err) {
       console.error('Error loading Google Maps:', err)
       setError('Failed to load Google Maps')
       setIsLoading(false)
+    }
+  }
+
+  const initializeAutocomplete = () => {
+    if (!searchInputRef.current) return
+
+    try {
+      const autocomplete = new google.maps.places.Autocomplete(searchInputRef.current, {
+        types: ['address'],
+        componentRestrictions: { country: 'fr' } // Peut être retiré pour recherche mondiale
+      })
+
+      autocompleteRef.current = autocomplete
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace()
+        
+        if (!place.geometry || !place.geometry.location) {
+          setError('No details available for input: ' + place.name)
+          return
+        }
+
+        const newLocation = {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        }
+
+        setLocation(newLocation)
+        setAddress(place.formatted_address || '')
+        setSearchInput(place.formatted_address || '')
+
+        // Update map and marker
+        if (mapInstanceRef.current && markerRef.current) {
+          mapInstanceRef.current.setCenter(newLocation)
+          mapInstanceRef.current.setZoom(15)
+          markerRef.current.setPosition(newLocation)
+        }
+      })
+    } catch (error) {
+      console.log('Places API not available, using fallback')
+      // Fallback : recherche manuelle par géocodage
+      addManualSearchFallback()
+    }
+  }
+
+  const addManualSearchFallback = () => {
+    if (!searchInputRef.current) return
+    
+    searchInputRef.current.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        await searchAddressManually(searchInputRef.current?.value || '')
+      }
+    })
+  }
+
+  const searchAddressManually = async (address: string) => {
+    if (!address.trim()) return
+    
+    try {
+      const geocoder = new google.maps.Geocoder()
+      const response = await geocoder.geocode({ address })
+      
+      if (response.results && response.results[0]) {
+        const result = response.results[0]
+        const newLocation = {
+          lat: result.geometry.location.lat(),
+          lng: result.geometry.location.lng()
+        }
+        
+        setLocation(newLocation)
+        setAddress(result.formatted_address)
+        setSearchInput(result.formatted_address)
+        
+        // Update map and marker
+        if (mapInstanceRef.current && markerRef.current) {
+          mapInstanceRef.current.setCenter(newLocation)
+          mapInstanceRef.current.setZoom(15)
+          markerRef.current.setPosition(newLocation)
+        }
+      }
+    } catch (error) {
+      console.error('Geocoding failed:', error)
+      setError('Address search failed. Please try clicking on the map instead.')
     }
   }
 
@@ -121,6 +223,7 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
       if (response.results && response.results[0]) {
         const formattedAddress = response.results[0].formatted_address
         setAddress(formattedAddress)
+        setSearchInput(formattedAddress)
       }
     } catch (err) {
       console.error('Geocoding error:', err)
@@ -211,7 +314,23 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
         </div>
 
         {/* Controls */}
-        <div className="p-4 border-b border-gray-200">
+        <div className="p-4 border-b border-gray-200 space-y-4">
+          {/* Address Search */}
+          <div className="relative">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Type address and press Enter..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          {/* Location Controls */}
           <div className="flex items-center justify-between">
             <Button
               variant="secondary"
@@ -224,11 +343,15 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
             </Button>
             
             {location && (
-              <div className="text-sm text-gray-600">
-                {address && <div className="mb-1">{address}</div>}
-                <div>
+              <div className="text-sm text-gray-600 text-right">
+                <div className="text-xs text-gray-500 mb-1">
                   Lat: {location.lat.toFixed(6)}, Lng: {location.lng.toFixed(6)}
                 </div>
+                {address && (
+                  <div className="max-w-64 truncate" title={address}>
+                    {address}
+                  </div>
+                )}
               </div>
             )}
           </div>

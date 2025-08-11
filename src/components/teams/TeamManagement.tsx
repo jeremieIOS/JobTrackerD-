@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useTeams, useTeamMembers, useUpdateMemberRole, useRemoveTeamMember, useLeaveTeam } from '../../hooks/useTeams'
+import { useTeams, useTeamMembers, useUpdateMemberRole, useRemoveTeamMember, useLeaveTeam, useDeleteTeam } from '../../hooks/useTeams'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui/Button'
 import { 
@@ -12,15 +12,18 @@ import {
   LogOut,
   Copy,
   Check,
-  ChevronDown
+  ChevronDown,
+  Trash2,
+  AlertTriangle
 } from 'lucide-react'
 import type { Team, TeamRole } from '../../lib/supabase'
 
 interface TeamManagementProps {
   selectedTeamId?: string
+  onTeamDeleted?: () => void
 }
 
-export function TeamManagement({ selectedTeamId }: TeamManagementProps) {
+export function TeamManagement({ selectedTeamId, onTeamDeleted }: TeamManagementProps) {
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null)
   const [copiedInviteCode, setCopiedInviteCode] = useState<string | null>(null)
   const { user } = useAuth()
@@ -28,6 +31,22 @@ export function TeamManagement({ selectedTeamId }: TeamManagementProps) {
   const updateMemberRole = useUpdateMemberRole()
   const removeMember = useRemoveTeamMember()
   const leaveTeam = useLeaveTeam()
+  const deleteTeam = useDeleteTeam()
+  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
+
+  const handleDeleteTeam = async (teamId: string) => {
+    try {
+      await deleteTeam.mutateAsync(teamId)
+      setShowDeleteConfirm(null)
+      if (onTeamDeleted) {
+        onTeamDeleted()
+      }
+    } catch (error) {
+      console.error('Error deleting team:', error)
+      alert('Failed to delete team. Make sure you are the team admin.')
+    }
+  }
 
   const currentTeam = teams.find((team: Team & { role: TeamRole }) => team.id === selectedTeamId)
 
@@ -55,6 +74,10 @@ export function TeamManagement({ selectedTeamId }: TeamManagementProps) {
         updateMemberRole={updateMemberRole}
         removeMember={removeMember}
         leaveTeam={leaveTeam}
+        onDeleteTeam={handleDeleteTeam}
+        showDeleteConfirm={showDeleteConfirm}
+        setShowDeleteConfirm={setShowDeleteConfirm}
+        isDeleting={deleteTeam.isPending}
       />
     </div>
   )
@@ -70,6 +93,10 @@ interface TeamCardProps {
   updateMemberRole: any
   removeMember: any
   leaveTeam: any
+  onDeleteTeam: (teamId: string) => void
+  showDeleteConfirm: string | null
+  setShowDeleteConfirm: (teamId: string | null) => void
+  isDeleting: boolean
 }
 
 function TeamCard({ 
@@ -81,7 +108,11 @@ function TeamCard({
   setCopiedInviteCode,
   updateMemberRole,
   removeMember,
-  leaveTeam
+  leaveTeam,
+  onDeleteTeam,
+  showDeleteConfirm,
+  setShowDeleteConfirm,
+  isDeleting
 }: TeamCardProps) {
   const { data: members = [] } = useTeamMembers(team.id)
   const isAdmin = team.role === 'admin'
@@ -288,6 +319,58 @@ function TeamCard({
                 <LogOut size={14} />
                 Leave Team
               </Button>
+            </div>
+          )}
+
+          {/* Admin Actions */}
+          {isAdmin && (
+            <div className="pt-4 border-t border-gray-200">
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                  <Settings size={14} />
+                  Admin Actions
+                </h4>
+                
+                {showDeleteConfirm === team.id ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-2 text-red-800">
+                      <AlertTriangle size={16} />
+                      <span className="font-medium">Delete Team</span>
+                    </div>
+                    <p className="text-sm text-red-700 mb-3">
+                      This will permanently delete the team and convert all team jobs to personal jobs. This action cannot be undone.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDeleteTeam(team.id)}
+                        disabled={isDeleting}
+                        className="bg-red-600 text-white hover:bg-red-700"
+                      >
+                        {isDeleting ? 'Deleting...' : 'Yes, Delete Team'}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowDeleteConfirm(null)}
+                        disabled={isDeleting}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowDeleteConfirm(team.id)}
+                    className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 size={14} />
+                    Delete Team
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>

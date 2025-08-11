@@ -19,9 +19,10 @@ type JoinTeamData = z.infer<typeof joinTeamSchema>
 
 interface TeamModalProps {
   onClose: () => void
+  onTeamCreated?: (teamId: string) => void
 }
 
-export function TeamModal({ onClose }: TeamModalProps) {
+export function TeamModal({ onClose, onTeamCreated }: TeamModalProps) {
   const [mode, setMode] = useState<'select' | 'create' | 'join'>('select')
   const createTeamMutation = useCreateTeam()
   const joinTeamMutation = useJoinTeam()
@@ -36,7 +37,10 @@ export function TeamModal({ onClose }: TeamModalProps) {
 
   const handleCreateTeam = async (data: CreateTeamData) => {
     try {
-      await createTeamMutation.mutateAsync(data)
+      const team = await createTeamMutation.mutateAsync(data)
+      if (onTeamCreated && team) {
+        onTeamCreated(team.id)
+      }
       onClose()
     } catch (error) {
       console.error('Error creating team:', error)

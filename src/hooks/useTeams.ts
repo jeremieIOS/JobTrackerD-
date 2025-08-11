@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import type { Team, TeamMember, TeamRole } from '../lib/supabase'
 import { useAuth } from './useAuth'
 
+
 // Get user's teams
 export function useTeams() {
   const { user } = useAuth()
@@ -110,7 +111,66 @@ export function useCreateTeam() {
       return team as Team
     },
     onSuccess: () => {
+      // Invalider toutes les queries teams pour forcer le re-fetch
       queryClient.invalidateQueries({ queryKey: ['teams'] })
+      queryClient.invalidateQueries({ queryKey: ['teams', user?.id] })
+    }
+  })
+}
+
+// Delete team (admin only)
+export function useDeleteTeam() {
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (teamId: string) => {
+      if (!user) throw new Error('User not authenticated')
+
+      // Vérifier que l'utilisateur est admin de cette équipe
+      const { data: teamData, error: teamError } = await supabase
+        .from('teams')
+        .select('admin_id')
+        .eq('id', teamId)
+        .single()
+
+      if (teamError) throw teamError
+      if (teamData.admin_id !== user.id) {
+        throw new Error('Only team admin can delete the team')
+      }
+
+      // Supprimer d'abord tous les membres de l'équipe
+      const { error: membersError } = await supabase
+        .from('team_members')
+        .delete()
+        .eq('team_id', teamId)
+
+      if (membersError) throw membersError
+
+      // Supprimer tous les jobs de l'équipe (optionnel - ou les transférer)
+      const { error: jobsError } = await supabase
+        .from('jobs')
+        .update({ team_id: null })  // Convertir en jobs personnels
+        .eq('team_id', teamId)
+
+      if (jobsError) throw jobsError
+
+      // Enfin, supprimer l'équipe
+      const { error: deleteError } = await supabase
+        .from('teams')
+        .delete()
+        .eq('id', teamId)
+
+      if (deleteError) throw deleteError
+
+      return { teamId }
+    },
+    onSuccess: () => {
+      // Invalider le cache des équipes
+      queryClient.invalidateQueries({ queryKey: ['teams'] })
+      queryClient.invalidateQueries({ queryKey: ['teams', user?.id] })
+      // Invalider aussi le cache des jobs au cas où
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
     }
   })
 }
@@ -232,35 +292,4 @@ export function useLeaveTeam() {
   })
 }
 
-// Delete team (admin only)
-export function useDeleteTeam() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: async (teamId: string) => {
-      // First delete all team members
-      await supabase
-        .from('team_members')
-        .delete()
-        .eq('team_id', teamId)
-      
-      // Then delete all team jobs
-      await supabase
-        .from('jobs')
-        .delete()
-        .eq('team_id', teamId)
-      
-      // Finally delete the team
-      const { error } = await supabase
-        .from('teams')
-        .delete()
-        .eq('id', teamId)
-        
-      if (error) throw error
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['teams'] })
-      queryClient.invalidateQueries({ queryKey: ['jobs'] })
-    }
-  })
-}
+

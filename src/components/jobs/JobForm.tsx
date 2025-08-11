@@ -2,16 +2,17 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import type { Job } from '../../lib/supabase'
+import type { Job, RecurrencePattern } from '../../lib/supabase'
 import { Button } from '../ui/Button'
 import { LocationPicker } from '../maps/LocationPicker'
 import { LocationDisplay } from '../maps/LocationDisplay'
+import { RecurrenceSettings } from './RecurrenceSettings'
 import { X, MapPin, Plus } from 'lucide-react'
 
 const jobSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
-  status: z.enum(['not_started', 'in_progress', 'completed', 'blocked', 'cancelled', 'cancelled_by_client', 'no_parking']),
+  status: z.enum(['not_started', 'completed', 'cancelled', 'no_parking']),
   priority: z.enum(['low', 'medium', 'high']).optional(),
   due_date: z.string().optional(),
 })
@@ -37,6 +38,9 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
     job?.location || null
   )
+  const [recurrencePattern, setRecurrencePattern] = useState<RecurrencePattern | null>(
+    job?.recurrence_pattern || null
+  )
 
   const {
     register,
@@ -58,6 +62,9 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
       ...data,
       due_date: data.due_date ? new Date(data.due_date).toISOString() : undefined,
       location: selectedLocation || undefined,
+      is_recurring: !!recurrencePattern,
+      recurrence_pattern: recurrencePattern || undefined,
+      next_occurrence: recurrencePattern ? new Date().toISOString() : undefined,
     }
     
     if (isEdit) {
@@ -135,11 +142,8 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
             </label>
             <select {...register('status')} id="status" className="input-field">
               <option value="not_started">Not Started</option>
-              <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
-              <option value="blocked">Blocked</option>
               <option value="cancelled">Cancelled</option>
-              <option value="cancelled_by_client">Cancelled by Client</option>
               <option value="no_parking">No Parking</option>
             </select>
             {errors.status && (
@@ -224,6 +228,15 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
               </Button>
             )}
           </div>
+
+          {/* Recurrence Settings - Only for new jobs */}
+          {!isEdit && (
+            <RecurrenceSettings
+              control={undefined}
+              value={recurrencePattern}
+              onChange={setRecurrencePattern}
+            />
+          )}
 
           {/* Actions */}
           <div className="flex gap-3 pt-4">

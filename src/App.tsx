@@ -3,8 +3,30 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuth } from './hooks/useAuth'
 import { AuthPage } from './pages/AuthPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { JobFormPage } from './pages/JobFormPage'
+import { ErrorBoundary } from './components/error/ErrorBoundary'
+import { UpdateNotification, InstallPrompt } from './components/system/UpdateNotification'
+import { useEffect } from 'react'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors
+        if (error && typeof error === 'object' && 'status' in error) {
+          const status = (error as any).status
+          if (status >= 400 && status < 500) return false
+        }
+        return failureCount < 2
+      },
+      refetchOnWindowFocus: false,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+})
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -49,10 +71,30 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  useEffect(() => {
+    // Register service worker
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('✅ Service Worker registered:', registration)
+        })
+        .catch((error) => {
+          console.error('❌ Service Worker registration failed:', error)
+        })
+    }
+
+    // Set theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]')
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', '#3b82f6')
+    }
+  }, [])
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Routes>
           <Route
             path="/auth"
             element={
@@ -69,10 +111,31 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/jobs/new"
+            element={
+              <ProtectedRoute>
+                <JobFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/jobs/:id/edit"
+            element={
+              <ProtectedRoute>
+                <JobFormPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        
+        {/* System notifications */}
+        <UpdateNotification />
+        <InstallPrompt />
       </Router>
     </QueryClientProvider>
+    </ErrorBoundary>
   )
 }
 

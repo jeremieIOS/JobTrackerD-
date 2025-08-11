@@ -1,6 +1,8 @@
-import type { Job } from '../../lib/supabase'
+import type { Job, JobStatus } from '../../lib/supabase'
 import { Button } from '../ui/Button'
 import { LocationDisplay } from '../maps/LocationDisplay'
+import { NotesSection } from './NotesSection'
+import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 
   Calendar, 
   CheckCircle, 
@@ -8,15 +10,20 @@ import {
   AlertCircle,
   MoreHorizontal,
   Edit,
-  Trash2
+  Trash2,
+  User,
+  ChevronDown,
+  Repeat
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
+import { useState } from 'react'
 
 interface JobCardProps {
   job: Job
   onEdit: (job: Job) => void
   onDelete: (id: string) => void
   onComplete: (id: string) => void
+  onStatusChange?: (id: string, status: JobStatus) => void
 }
 
 const statusConfig = {
@@ -25,29 +32,14 @@ const statusConfig = {
     color: 'bg-gray-100 text-gray-800',
     icon: Clock,
   },
-  in_progress: {
-    label: 'In Progress',
-    color: 'bg-blue-100 text-blue-800',
-    icon: Clock,
-  },
   completed: {
     label: 'Completed',
     color: 'bg-green-100 text-green-800',
     icon: CheckCircle,
   },
-  blocked: {
-    label: 'Blocked',
-    color: 'bg-red-100 text-red-800',
-    icon: AlertCircle,
-  },
   cancelled: {
     label: 'Cancelled',
-    color: 'bg-gray-100 text-gray-600',
-    icon: AlertCircle,
-  },
-  cancelled_by_client: {
-    label: 'Cancelled by Client',
-    color: 'bg-orange-100 text-orange-800',
+    color: 'bg-red-100 text-red-800',
     icon: AlertCircle,
   },
   no_parking: {
@@ -63,9 +55,29 @@ const priorityConfig = {
   high: 'High',
 }
 
-export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
+export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: JobCardProps) {
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
+  const [showNotes, setShowNotes] = useState(false)
   const status = statusConfig[job.status as keyof typeof statusConfig]
   const StatusIcon = status.icon
+  
+  // Get notes count
+  const { data: notesCount = 0 } = useJobNotesCount(job.id)
+
+           const statusOptions: { value: JobStatus; label: string }[] = [
+           { value: 'not_started', label: 'Not Started' },
+           { value: 'completed', label: 'Completed' },
+           { value: 'cancelled', label: 'Cancelled' },
+           { value: 'no_parking', label: 'No Parking' },
+         ]
+
+  const handleStatusChange = (newStatus: JobStatus) => {
+    if (onStatusChange) {
+      onStatusChange(job.id, newStatus)
+    }
+    setShowStatusDropdown(false)
+  }
 
   return (
     <div className="card hover:shadow-md transition-shadow duration-200">
@@ -73,15 +85,66 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <h3 className="font-semibold text-gray-900 mb-2">{job.title}</h3>
+          
+          {/* Creator info */}
+          {job.created_by_user && (
+            <div className="flex items-center gap-1 mb-2 text-xs text-gray-500">
+              <User size={12} />
+              <span>Created by {job.created_by_user.name}</span>
+            </div>
+          )}
+          
           <div className="flex items-center gap-2">
-            <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${status.color}`}>
-              <StatusIcon size={12} />
-              {status.label}
-            </span>
+            {/* Clickable status with dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full hover:opacity-80 transition-opacity ${status.color}`}
+              >
+                <StatusIcon size={12} />
+                {status.label}
+                <ChevronDown size={10} />
+              </button>
+              
+              {showStatusDropdown && (
+                <div className="absolute top-8 left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[150px]">
+                  <div className="p-1">
+                    {statusOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => handleStatusChange(option.value)}
+                        className={`flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 rounded text-left ${
+                          option.value === job.status ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
             {job.priority && (
               <span className="text-xs text-gray-500">
                 Priority: {priorityConfig[job.priority]}
               </span>
+            )}
+
+            {/* Recurring indicator */}
+            {job.is_recurring && (
+              <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                <Repeat size={12} />
+                <span>Recurring</span>
+              </div>
+            )}
+
+            {/* Generated from recurring job indicator */}
+            {job.parent_job_id && (
+              <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <Repeat size={12} />
+                <span>Auto-generated</span>
+              </div>
             )}
           </div>
         </div>
@@ -166,6 +229,14 @@ export function JobCard({ job, onEdit, onDelete, onComplete }: JobCardProps) {
           </span>
         )}
       </div>
+
+      {/* Notes Section */}
+      <NotesSection
+        jobId={job.id}
+        isExpanded={showNotes}
+        onToggle={() => setShowNotes(!showNotes)}
+        notesCount={notesCount}
+      />
     </div>
   )
 }
