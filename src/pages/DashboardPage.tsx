@@ -11,6 +11,7 @@ import { AnalyticsDashboard } from '../components/analytics/AnalyticsDashboard'
 import { ResponsiveNav } from '../components/navigation/ResponsiveNav'
 import { ThemeToggle } from '../components/theme/ThemeToggle'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { LogOut, Plus } from 'lucide-react'
 
 export function DashboardPage() {
@@ -44,7 +45,7 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Responsive Navigation */}
       <ResponsiveNav
         activeTab={activeTab}
@@ -81,22 +82,22 @@ export function DashboardPage() {
             </div>
             
             {/* Theme Settings */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Appearance</h3>
+            <Card className="p-6 mb-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Appearance</h3>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Theme</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred color scheme</p>
+                  <p className="text-sm font-medium text-foreground">Theme</p>
+                  <p className="text-sm text-muted-foreground">Choose your preferred color scheme</p>
                 </div>
                 <ThemeToggle />
               </div>
-            </div>
+            </Card>
             
             {/* Notification Settings */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notifications</h3>
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Notifications</h3>
               <NotificationPreferences />
-            </div>
+            </Card>
           </div>
         )}
         {activeTab === 'teams' && (
@@ -122,7 +123,7 @@ export function DashboardPage() {
                   </Button>
                 </div>
               </div>
-            </div>
+            </Card>
             
             <TeamManagement 
               selectedTeamId={selectedTeamId} 

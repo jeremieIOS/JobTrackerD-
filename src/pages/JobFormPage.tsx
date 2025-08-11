@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useJobs } from '../hooks/useJobs'
 import { JobFormContent } from '../components/jobs/JobFormContent'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { ArrowLeft, Briefcase } from 'lucide-react'
 import type { Job } from '../lib/supabase'
 
@@ -39,9 +40,9 @@ export function JobFormPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
@@ -54,7 +55,7 @@ export function JobFormPage() {
                 <ArrowLeft size={16} />
                 Back to Jobs
               </Button>
-              <div className="h-6 w-px bg-gray-300" />
+              <div className="h-6 w-px bg-border" />
               <div className="flex items-center gap-2">
                 <Briefcase size={20} className="text-gray-600" />
                 <h1 className="text-xl font-semibold text-gray-900">
@@ -73,13 +74,13 @@ export function JobFormPage() {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <Card>
           <div className="p-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 {isEdit ? 'Edit Job Details' : 'Job Information'}
               </h2>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 {isEdit 
                   ? 'Update the job details below. Changes will be saved immediately.'
                   : 'Fill in the details below to create a new job. You can set up recurring jobs and add location information.'
@@ -94,12 +95,12 @@ export function JobFormPage() {
               isLoading={isCreating || isUpdating}
             />
           </div>
-        </div>
+        </Card>
 
         {/* Help Section */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Tips for Creating Jobs</h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-800">
+        <Card className="mt-8">
+          <h3 className="text-lg font-semibold text-foreground mb-3">💡 Tips for Creating Jobs</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
             <div>
               <h4 className="font-medium mb-2">📋 Job Details</h4>
               <ul className="space-y-1">
@@ -133,7 +134,7 @@ export function JobFormPage() {
               </ul>
             </div>
           </div>
-        </div>
+        </Card>
       </main>
     </div>
   )
