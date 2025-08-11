@@ -55,9 +55,10 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
       const loader = new Loader({
         apiKey: GOOGLE_MAPS_API_KEY,
         version: 'weekly',
-        libraries: ['places', 'geocoding'],
+        libraries: ['places', 'geocoding', 'marker'],
         region: 'FR', // Optimisation pour la France
-        language: 'fr' // Interface en français
+        language: 'fr', // Interface en français
+        id: 'google-maps-script' // Éviter les conflits
       })
 
       await loader.load()
@@ -143,9 +144,23 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
       initializeAutocomplete()
       
       setIsLoading(false)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error loading Google Maps:', err)
-      setError('Failed to load Google Maps')
+      
+      // Détecter le type d'erreur spécifique
+      let errorMessage = 'Failed to load Google Maps'
+      
+      if (err.message?.includes('API key')) {
+        errorMessage = '🔑 Invalid API key. Check your Google Cloud configuration.'
+      } else if (err.message?.includes('quota')) {
+        errorMessage = '💳 API quota exceeded. Check your Google Cloud billing.'
+      } else if (err.message?.includes('not authorized') || err.message?.includes('REQUEST_DENIED')) {
+        errorMessage = '🚫 Missing API permissions. Enable Geocoding API and Places API in Google Cloud Console.'
+      } else if (err.message?.includes('network')) {
+        errorMessage = '🌐 Network error. Check your internet connection.'
+      }
+      
+      setError(errorMessage)
       setIsLoading(false)
     }
   }
@@ -246,8 +261,17 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
         setAddress(formattedAddress)
         setSearchInput(formattedAddress)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Geocoding error:', err)
+      
+      // Si le geocoding échoue, afficher les coordonnées
+      if (err.code === 'REQUEST_DENIED') {
+        setAddress(`📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} (Geocoding disabled)`)
+        setSearchInput(`${lat.toFixed(6)}, ${lng.toFixed(6)}`)
+      } else {
+        setAddress(`📍 ${lat.toFixed(6)}, ${lng.toFixed(6)}`)
+        setSearchInput(`${lat.toFixed(6)}, ${lng.toFixed(6)}`)
+      }
     }
   }
 
