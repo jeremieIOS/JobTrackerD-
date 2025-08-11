@@ -1,7 +1,7 @@
 import { useJobs } from '../../hooks/useJobs'
 import { useTeams } from '../../hooks/useTeams'
 import { JobsTimeline } from './JobsTimeline'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -31,14 +31,14 @@ function MetricCard({ title, value, icon, description, trend }: MetricCardProps)
     <Card>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+          <div className="p-2 bg-primary/10 rounded-lg text-primary">
             {icon}
           </div>
-          <h3 className="font-medium text-gray-900">{title}</h3>
+          <h3 className="font-medium text-foreground">{title}</h3>
         </div>
         {trend && (
           <div className={`flex items-center gap-1 text-sm ${
-            trend.isPositive ? 'text-green-600' : 'text-red-600'
+            trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
           }`}>
             <TrendingUp size={14} />
             <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
@@ -83,18 +83,18 @@ function StatusDistribution({ jobs }: StatusDistributionProps) {
     not_started: { label: 'Not Started', color: 'bg-yellow-500' },
     completed: { label: 'Completed', color: 'bg-green-500' },
     cancelled: { label: 'Cancelled', color: 'bg-red-500' },
-    no_parking: { label: 'No Parking', color: 'bg-gray-500' }
+    no_parking: { label: 'No Parking', color: 'bg-muted-foreground' }
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+    <Card className="p-6">
+      <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
         <BarChart3 size={20} />
         Job Status Distribution
       </h3>
       
       {total === 0 ? (
-        <p className="text-gray-500 text-center py-8">No jobs found</p>
+        <p className="text-muted-foreground text-center py-8">No jobs found</p>
       ) : (
         <div className="space-y-4">
           {Object.entries(statusCounts).map(([status, count]) => {
@@ -104,7 +104,7 @@ function StatusDistribution({ jobs }: StatusDistributionProps) {
             return (
               <div key={status}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-foreground">
                     {config.label}
                   </span>
                   <span className="text-sm text-gray-600">
@@ -122,7 +122,7 @@ function StatusDistribution({ jobs }: StatusDistributionProps) {
           })}
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -139,14 +139,14 @@ function RecentActivity({ jobs }: RecentActivityProps) {
   }, [jobs])
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+    <Card className="p-6">
+      <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
         <Clock size={20} />
         Recent Activity
       </h3>
       
       {recentJobs.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">No recent jobs</p>
+        <p className="text-muted-foreground text-center py-8">No recent jobs</p>
       ) : (
         <div className="space-y-3">
           {recentJobs.map((job) => (
@@ -158,10 +158,10 @@ function RecentActivity({ jobs }: RecentActivityProps) {
                 'bg-yellow-500'
               }`} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-foreground truncate">
                   {job.title}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   {new Date(job.created_at).toLocaleDateString()} • {job.status.replace('_', ' ')}
                 </p>
               </div>
@@ -175,7 +175,7 @@ function RecentActivity({ jobs }: RecentActivityProps) {
           ))}
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -230,7 +230,7 @@ export function AnalyticsDashboard() {
   if (!analytics) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Unable to load analytics data</p>
+        <p className="text-muted-foreground">Unable to load analytics data</p>
       </div>
     )
   }
@@ -239,7 +239,7 @@ export function AnalyticsDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Analytics Dashboard</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Analytics Dashboard</h2>
         <p className="text-gray-600">
           Track your productivity and job management insights
         </p>
@@ -294,9 +294,9 @@ export function AnalyticsDashboard() {
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg border border-purple-200">
           <div className="flex items-center gap-3 mb-3">
             <Repeat className="text-purple-600" size={24} />
-            <h3 className="font-semibold text-gray-900">Recurring Jobs Insight</h3>
+            <h3 className="font-semibold text-foreground">Recurring Jobs Insight</h3>
           </div>
-          <p className="text-gray-700 mb-2">
+          <p className="text-foreground mb-2">
             You have <span className="font-semibold text-purple-600">{analytics.recurringJobs}</span> recurring job templates 
             helping automate your workflow.
           </p>
@@ -310,9 +310,9 @@ export function AnalyticsDashboard() {
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
         <div className="flex items-center gap-3 mb-3">
           <TrendingUp className="text-green-600" size={24} />
-          <h3 className="font-semibold text-gray-900">Productivity Tip</h3>
+          <h3 className="font-semibold text-foreground">Productivity Tip</h3>
         </div>
-        <p className="text-gray-700 mb-2">
+        <p className="text-foreground mb-2">
           {analytics.completionRate >= 80 ? 
             "Excellent job! You're maintaining a high completion rate." :
             analytics.completionRate >= 60 ?

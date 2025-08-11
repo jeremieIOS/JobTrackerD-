@@ -42,7 +42,7 @@ const notificationColors: Record<NotificationType, string> = {
   note_added: 'text-purple-600 bg-purple-100',
   note_mentioned: 'text-purple-600 bg-purple-100',
   team_invited: 'text-indigo-600 bg-indigo-100',
-  team_role_changed: 'text-gray-600 bg-gray-100',
+  team_role_changed: 'text-muted-foreground bg-gray-100',
 }
 
 export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps) {
@@ -99,12 +99,12 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
       />
       
       {/* Panel notifications */}
-      <div className="absolute inset-x-4 top-4 bottom-4 lg:inset-auto lg:top-0 lg:right-0 lg:w-96 lg:max-h-[600px] bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col">
+      <div className="absolute inset-x-4 top-4 bottom-4 lg:inset-auto lg:top-0 lg:right-0 lg:w-96 lg:max-h-[600px] bg-card rounded-lg shadow-xl border border-border flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Bell size={20} className="text-gray-700" />
-            <h2 className="font-semibold text-gray-900">Notifications</h2>
+            <h2 className="font-semibold text-foreground">Notifications</h2>
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                 {unreadCount}
@@ -127,7 +127,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
             )}
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 p-1"
+              className="text-gray-400 hover:text-muted-foreground p-1"
             >
               <X size={18} />
             </button>
@@ -135,13 +135,13 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         </div>
 
         {/* Filtres */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-border">
           <button
             onClick={() => setFilter('all')}
             className={`flex-1 py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
               filter === 'all'
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                : 'border-transparent text-muted-foreground hover:text-gray-700'
             }`}
           >
             All ({notifications.length})
@@ -151,7 +151,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
             className={`flex-1 py-2 px-4 text-sm font-medium border-b-2 transition-colors ${
               filter === 'unread'
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                : 'border-transparent text-muted-foreground hover:text-gray-700'
             }`}
           >
             Unread ({unreadCount})
@@ -161,12 +161,12 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
         {/* Liste des notifications */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-muted-foreground">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-2"></div>
               Loading notifications...
             </div>
           ) : filteredNotifications.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-muted-foreground">
               <BellOff className="w-12 h-12 mx-auto mb-4 text-gray-400" />
               <p className="font-medium">No notifications</p>
               <p className="text-sm mt-1">
@@ -178,7 +178,7 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
               {filteredNotifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                  className={`p-4 hover:bg-muted cursor-pointer transition-colors ${
                     !notification.read_at ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                   }`}
                   onClick={() => handleNotificationClick(notification)}
@@ -191,15 +191,15 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
-                          <p className={`text-sm ${!notification.read_at ? 'font-semibold' : 'font-medium'} text-gray-900 leading-tight`}>
+                          <p className={`text-sm ${!notification.read_at ? 'font-semibold' : 'font-medium'} text-foreground leading-tight`}>
                             {notification.title}
                           </p>
-                          <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                             {notification.message}
                           </p>
                           
                           {/* Métadonnées */}
-                          <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                             <span>
                               {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                             </span>
@@ -249,8 +249,8 @@ export function NotificationCenter({ isOpen, onClose }: NotificationCenterProps)
 
         {/* Footer */}
         {filteredNotifications.length > 0 && (
-          <div className="p-4 border-t border-gray-200 bg-gray-50">
-            <p className="text-xs text-gray-500 text-center">
+          <div className="p-4 border-t border-border bg-muted">
+            <p className="text-xs text-muted-foreground text-center">
               Notifications are kept for 30 days
             </p>
           </div>
