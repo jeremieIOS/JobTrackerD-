@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { MapPin, Crosshair, X, Search } from 'lucide-react'
 // import { useGoogleMaps } from '../../hooks/useGoogleMaps' // Commented for build fix
 
@@ -435,7 +435,7 @@ export function LocationPicker({ initialLocation, onLocationSelect, onClose }: L
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button onClick={() => initializeMap()} variant="primary" size="sm">
+                  <Button onClick={() => initializeMap()} variant="default" size="sm">
                     Retry
                   </Button>
                   <Button onClick={onClose} variant="secondary" size="sm">

@@ -1,7 +1,10 @@
 import { Bell, User, Plus } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { useUnreadNotificationsCount } from '../../hooks/useNotifications'
-import { useAuth } from '../../hooks/useAuth'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useUnreadNotificationsCount } from '@/hooks/useNotifications'
+import { useAuth } from '@/hooks/useAuth'
 
 interface DesktopNavProps {
   activeTab: string
@@ -30,17 +33,17 @@ export function DesktopNav({
   return (
     <div className="hidden md:block">
       {/* Desktop Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-background border-b px-6 py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Left: Logo + Title */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">JT</span>
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold">JT</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Job Tracker</h1>
-                <p className="text-sm text-gray-500">Professional Task Management</p>
+                <h1 className="text-xl font-bold">Job Tracker</h1>
+                <p className="text-sm text-muted-foreground">Professional Task Management</p>
               </div>
             </div>
           </div>
@@ -48,39 +51,39 @@ export function DesktopNav({
           {/* Right: Actions + Notifications + Profile */}
           <div className="flex items-center gap-4">
             {/* Create Job Button */}
-            <Button
-              onClick={onCreateJob}
-              variant="primary"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Plus size={16} />
+            <Button onClick={onCreateJob} className="gap-2">
+              <Plus className="h-4 w-4" />
               Create Job
             </Button>
 
             {/* Notifications */}
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={onToggleNotifications}
-              className="relative p-2"
+              className="relative"
             >
-              <Bell size={20} />
+              <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                >
                   {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
+                </Badge>
               )}
             </Button>
 
             {/* Profile */}
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-              <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <User size={16} className="text-primary-600" />
-              </div>
+            <div className="flex items-center gap-3 pl-4 border-l">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>
+                  <User className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
               <div className="text-sm">
-                <p className="font-medium text-gray-900">{user?.email?.split('@')[0] || 'User'}</p>
-                <p className="text-gray-500">{user?.email}</p>
+                <p className="font-medium">{user?.email?.split('@')[0] || 'User'}</p>
+                <p className="text-muted-foreground">{user?.email}</p>
               </div>
             </div>
           </div>
@@ -88,24 +91,22 @@ export function DesktopNav({
       </header>
 
       {/* Desktop Tabs Navigation */}
-      <nav className="bg-white border-b border-gray-200 px-6">
+      <nav className="bg-background border-b px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex space-x-8">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-primary-500 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+            <TabsList className="h-auto bg-transparent p-0 justify-start">
+              {tabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="flex items-center gap-2 py-4 px-2 border-b-2 border-transparent data-[state=active]:border-primary rounded-none bg-transparent"
+                >
+                  <span>{tab.icon}</span>
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
       </nav>
     </div>

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { AlertCircle, Mail, Lock, CheckCircle } from 'lucide-react'
 
 const signupSchema = z.object({
@@ -155,7 +155,7 @@ export function SignupForm({ onToggleMode }: SignupFormProps) {
           )}
         </div>
 
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" disabled={loading} className="w-full">
           Create Account
         </Button>
       </form>

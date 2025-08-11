@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCreateTeam, useJoinTeam } from '../../hooks/useTeams'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { X, UserPlus, Plus } from 'lucide-react'
 
 const createTeamSchema = z.object({
@@ -142,7 +142,7 @@ export function TeamModal({ onClose, onTeamCreated }: TeamModalProps) {
                 </Button>
                 <Button
                   type="submit"
-                  loading={isLoading}
+                  disabled={isLoading}
                   className="flex-1"
                 >
                   Create Team
@@ -202,7 +202,7 @@ export function TeamModal({ onClose, onTeamCreated }: TeamModalProps) {
                 </Button>
                 <Button
                   type="submit"
-                  loading={isLoading}
+                  disabled={isLoading}
                   className="flex-1"
                 >
                   Join Team

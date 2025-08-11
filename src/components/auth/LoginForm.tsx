@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { AlertCircle, Mail, Lock } from 'lucide-react'
 
 const loginSchema = z.object({
@@ -110,7 +110,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
           )}
         </div>
 
-        <Button type="submit" loading={loading} className="w-full">
+        <Button type="submit" disabled={loading} className="w-full">
           Sign In
         </Button>
       </form>

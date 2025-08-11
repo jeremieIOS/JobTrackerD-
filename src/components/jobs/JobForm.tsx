@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { Job, RecurrencePattern } from '../../lib/supabase'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { LocationPicker } from '../maps/LocationPicker'
 import { LocationDisplay } from '../maps/LocationDisplay'
 import { RecurrenceSettings } from './RecurrenceSettings'
@@ -250,7 +250,7 @@ export function JobForm({ job, onSubmit, onCancel, isLoading = false }: JobFormP
             </Button>
             <Button
               type="submit"
-              loading={isLoading}
+              disabled={isLoading}
               className="flex-1"
             >
               {isEdit ? 'Update' : 'Create'}

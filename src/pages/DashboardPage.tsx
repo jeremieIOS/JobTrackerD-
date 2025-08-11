@@ -9,7 +9,7 @@ import { NotificationCenter } from '../components/notifications/NotificationCent
 import { NotificationPreferences } from '../components/notifications/NotificationPreferences'
 import { AnalyticsDashboard } from '../components/analytics/AnalyticsDashboard'
 import { ResponsiveNav } from '../components/navigation/ResponsiveNav'
-import { Button } from '../components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { LogOut, Plus } from 'lucide-react'
 
 export function DashboardPage() {

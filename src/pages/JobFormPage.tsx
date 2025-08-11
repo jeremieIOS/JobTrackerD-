@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useJobs } from '../hooks/useJobs'
 import { JobFormContent } from '../components/jobs/JobFormContent'
-import { Button } from '../components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { ArrowLeft, Briefcase } from 'lucide-react'
 import type { Job } from '../lib/supabase'
 

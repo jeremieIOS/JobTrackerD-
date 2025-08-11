@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTeams, useTeamMembers, useUpdateMemberRole, useRemoveTeamMember, useLeaveTeam, useDeleteTeam } from '../../hooks/useTeams'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/Button'
+import { Button } from '@/components/ui/button'
 import { 
   Users, 
   Settings, 
