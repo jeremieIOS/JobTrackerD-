@@ -106,8 +106,8 @@ export function DashboardPage() {
             <div className="mb-6">
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Teams</h2>
-                  <p className="text-gray-600 mt-1">
+                  <h2 className="text-2xl font-bold text-foreground">Teams</h2>
+                  <p className="text-muted-foreground mt-1">
                     Manage your teams and collaborate with team members
                   </p>
                 </div>
@@ -123,7 +123,7 @@ export function DashboardPage() {
                   </Button>
                 </div>
               </div>
-            </Card>
+            </div>
             
             <TeamManagement 
               selectedTeamId={selectedTeamId} 
