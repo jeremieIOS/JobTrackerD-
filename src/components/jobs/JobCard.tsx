@@ -1,5 +1,6 @@
 import type { Job, JobStatus } from '../../lib/supabase'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 
@@ -31,22 +32,22 @@ interface JobCardProps {
 const statusConfig = {
   not_started: {
     label: 'Not Started',
-    color: 'bg-gray-100 text-gray-800',
+    color: 'bg-muted text-muted-foreground',
     icon: Clock,
   },
   completed: {
     label: 'Completed',
-    color: 'bg-green-100 text-green-800',
+    color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
     icon: CheckCircle,
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'bg-red-100 text-red-800',
+    color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
     icon: AlertCircle,
   },
   no_parking: {
     label: 'No Parking',
-    color: 'bg-yellow-100 text-yellow-800',
+    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
     icon: AlertCircle,
   },
 }
@@ -97,10 +98,11 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
   }
 
   return (
-    <div className="card hover:shadow-md transition-shadow duration-200">
-      {/* 1. Job title + action */}
-      <div className="flex items-start justify-between py-3">
-        <h3 className="font-semibold text-gray-900 text-lg">{job.title}</h3>
+    <Card className="hover:shadow-md transition-shadow duration-200">
+      <CardContent className="p-6">
+        {/* 1. Job title + action */}
+        <div className="flex items-start justify-between py-3">
+        <h3 className="font-semibold text-foreground text-lg">{job.title}</h3>
         
         {/* Actions dropdown */}
         <div className="relative" ref={actionsMenuRef}>
@@ -112,14 +114,14 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
             <MoreHorizontal size={16} />
           </Button>
           {showActionsMenu && (
-            <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+            <div className="absolute right-0 top-8 bg-card border border-border rounded-lg shadow-lg z-10 min-w-[150px]">
             <div className="p-1">
               <button
                 onClick={() => {
                   onEdit(job)
                   setShowActionsMenu(false)
                 }}
-                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-card-foreground hover:bg-accent rounded"
               >
                 <Edit size={14} />
                 Edit
@@ -130,7 +132,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
                     onComplete(job.id)
                     setShowActionsMenu(false)
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-700 hover:bg-green-50 rounded"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/30 rounded"
                 >
                   <CheckCircle size={14} />
                   Mark Complete
@@ -141,7 +143,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
                   onDelete(job.id)
                   setShowActionsMenu(false)
                 }}
-                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-700 hover:bg-red-50 rounded"
+                className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded"
               >
                 <Trash2 size={14} />
                 Delete
@@ -155,23 +157,23 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       {/* 2. Created by + when created */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
         {job.created_by_user && (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <User size={14} />
             <span>Created by {job.created_by_user.name}</span>
           </div>
         )}
-        <div className="flex items-center gap-1 text-sm text-gray-500">
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Clock size={14} />
           <span>{formatDistanceToNow(new Date(job.created_at), { addSuffix: true })}</span>
         </div>
       </div>
 
       {/* 3. Separator */}
-      <div className="border-t border-gray-200"></div>
+      <div className="border-t border-border"></div>
 
       {/* 4. Due date + badge if recurring */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           {job.due_date ? (
             <>
               <Calendar size={14} />
@@ -180,7 +182,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           ) : (
             <>
               <Calendar size={14} />
-              <span className="text-gray-400">No due date</span>
+              <span className="text-muted-foreground">No due date</span>
             </>
           )}
         </div>
@@ -205,7 +207,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       </div>
 
       {/* 5. Separator */}
-      <div className="border-t border-gray-200"></div>
+      <div className="border-t border-border"></div>
 
       {/* 6. Priority + Location */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
@@ -213,17 +215,17 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         <div className="flex items-center gap-2 text-sm">
           {job.priority ? (
             <>
-              <span className="text-gray-500">Priority:</span>
+              <span className="text-muted-foreground">Priority:</span>
               <span className={`font-medium ${
-                job.priority === 'high' ? 'text-red-600' : 
-                job.priority === 'medium' ? 'text-yellow-600' : 
-                'text-green-600'
+                job.priority === 'high' ? 'text-red-600 dark:text-red-400' : 
+                job.priority === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 
+                'text-green-600 dark:text-green-400'
               }`}>
                 {priorityConfig[job.priority]}
               </span>
             </>
           ) : (
-            <span className="text-gray-400">No priority set</span>
+            <span className="text-muted-foreground">No priority set</span>
           )}
         </div>
 
@@ -231,7 +233,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           {job.location ? (
             <>
-              <div className="flex items-center gap-1 text-sm text-gray-600">
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin size={14} />
                 <span>{job.location.lat.toFixed(4)}, {job.location.lng.toFixed(4)}</span>
               </div>
@@ -246,27 +248,27 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
               </a>
             </>
           ) : (
-            <span className="text-gray-400 text-sm">No location</span>
+            <span className="text-muted-foreground text-sm">No location</span>
           )}
         </div>
       </div>
 
       {/* 7. Separator */}
-      <div className="border-t border-gray-200"></div>
+      <div className="border-t border-border"></div>
 
       {/* 8. Description */}
       <div className="py-3">
         {job.description ? (
-          <p className="text-gray-700 text-sm bg-gray-50 p-3 rounded-lg">
+          <p className="text-muted-foreground text-sm bg-muted p-3 rounded-lg">
             {job.description}
           </p>
         ) : (
-          <p className="text-gray-400 text-sm italic">No description</p>
+          <p className="text-muted-foreground text-sm italic">No description</p>
         )}
       </div>
 
       {/* 9. Separator */}
-      <div className="border-t border-gray-200"></div>
+      <div className="border-t border-border"></div>
 
       {/* 10. Status */}
       <div className="flex justify-center py-3">
@@ -287,8 +289,8 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
                   <button
                     key={option.value}
                     onClick={() => handleStatusChange(option.value)}
-                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-100 rounded text-left ${
-                      option.value === job.status ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent rounded text-left ${
+                      option.value === job.status ? 'bg-primary/10 text-primary' : 'text-card-foreground'
                     }`}
                   >
                     {option.label}
@@ -308,7 +310,8 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           onToggle={() => setShowNotes(!showNotes)}
           notesCount={notesCount}
         />
-      </div>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

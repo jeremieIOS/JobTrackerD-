@@ -1,6 +1,7 @@
 import { useJobs } from '../../hooks/useJobs'
 import { useTeams } from '../../hooks/useTeams'
 import { JobsTimeline } from './JobsTimeline'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -27,7 +28,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, icon, description, trend }: MetricCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+    <Card>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
@@ -45,12 +46,12 @@ function MetricCard({ title, value, icon, description, trend }: MetricCardProps)
         )}
       </div>
       <div className="mb-2">
-        <span className="text-2xl font-bold text-gray-900">{value}</span>
+        <span className="text-2xl font-bold text-foreground">{value}</span>
       </div>
       {description && (
-        <p className="text-sm text-gray-600">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       )}
-    </div>
+    </Card>
   )
 }
 
