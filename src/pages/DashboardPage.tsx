@@ -9,6 +9,7 @@ import { NotificationCenter } from '../components/notifications/NotificationCent
 import { NotificationPreferences } from '../components/notifications/NotificationPreferences'
 import { AnalyticsDashboard } from '../components/analytics/AnalyticsDashboard'
 import { ResponsiveNav } from '../components/navigation/ResponsiveNav'
+import { ThemeToggle } from '../components/theme/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { LogOut, Plus } from 'lucide-react'
 
@@ -75,10 +76,27 @@ export function DashboardPage() {
         {activeTab === 'settings' && (
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
-              <p className="text-gray-600 mt-1">Manage your notification preferences and account settings.</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Settings</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your notification preferences and account settings.</p>
             </div>
-            <NotificationPreferences />
+            
+            {/* Theme Settings */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Appearance</h3>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Theme</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred color scheme</p>
+                </div>
+                <ThemeToggle />
+              </div>
+            </div>
+            
+            {/* Notification Settings */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notifications</h3>
+              <NotificationPreferences />
+            </div>
           </div>
         )}
         {activeTab === 'teams' && (

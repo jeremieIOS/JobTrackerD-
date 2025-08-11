@@ -68,7 +68,10 @@ export {
   Lock,
   Unlock,
   Eye,
-  EyeOff
+  EyeOff,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react'
 
 // Business & Jobs

@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { JobFormPage } from './pages/JobFormPage'
 import { ErrorBoundary } from './components/error/ErrorBoundary'
 import { UpdateNotification, InstallPrompt } from './components/system/UpdateNotification'
+import { ThemeProvider } from './components/providers/ThemeProvider'
 import { useEffect } from 'react'
 
 const queryClient = new QueryClient({
@@ -92,8 +93,9 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <Router>
+      <ThemeProvider defaultTheme="system" storageKey="job-tracker-theme">
+        <QueryClientProvider client={queryClient}>
+          <Router>
           <Routes>
             <Route
               path="/auth"
@@ -134,7 +136,8 @@ function App() {
           <UpdateNotification />
           <InstallPrompt />
         </Router>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   )
 }
