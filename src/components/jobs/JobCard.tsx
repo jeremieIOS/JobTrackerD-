@@ -1,6 +1,5 @@
 import type { Job, JobStatus } from '../../lib/supabase'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 
@@ -15,8 +14,7 @@ import {
   ChevronDown,
   RotateCw,
   MapPin,
-  ExternalLink,
-  MessageSquare
+  ExternalLink
 } from '@/components/ui/icons'
 
 import { formatDistanceToNow } from 'date-fns'
@@ -209,34 +207,23 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       {/* 5. Separator */}
       <div className="border-t border-gray-200"></div>
 
-      {/* 6. Priority + Location + Notes */}
+      {/* 6. Priority + Location */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
-        {/* Priority + Notes Indicator */}
-        <div className="flex items-center gap-3 text-sm">
-          {/* Priority */}
-          <div className="flex items-center gap-2">
-            {job.priority ? (
-              <>
-                <span className="text-gray-500">Priority:</span>
-                <span className={`font-medium ${
-                  job.priority === 'high' ? 'text-red-600' : 
-                  job.priority === 'medium' ? 'text-yellow-600' : 
-                  'text-green-600'
-                }`}>
-                  {priorityConfig[job.priority]}
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-400">No priority set</span>
-            )}
-          </div>
-          
-          {/* Notes Indicator */}
-          {notesCount > 0 && (
-            <Badge variant="secondary" className="gap-1 h-5">
-              <MessageSquare className="h-3 w-3 stroke-[1.5]" />
-              <span className="text-xs">{notesCount}</span>
-            </Badge>
+        {/* Priority */}
+        <div className="flex items-center gap-2 text-sm">
+          {job.priority ? (
+            <>
+              <span className="text-gray-500">Priority:</span>
+              <span className={`font-medium ${
+                job.priority === 'high' ? 'text-red-600' : 
+                job.priority === 'medium' ? 'text-yellow-600' : 
+                'text-green-600'
+              }`}>
+                {priorityConfig[job.priority]}
+              </span>
+            </>
+          ) : (
+            <span className="text-gray-400">No priority set</span>
           )}
         </div>
 
