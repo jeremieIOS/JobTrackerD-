@@ -12,6 +12,7 @@ import {
   Target,
   BarChart3
 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { useMemo } from 'react'
 import type { Job } from '../../lib/supabase'
 
@@ -146,32 +147,67 @@ function RecentActivity({ jobs }: RecentActivityProps) {
       </h3>
       
       {recentJobs.length === 0 ? (
-        <p className="text-muted-foreground text-center py-8">No recent jobs</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <Clock className="w-12 h-12 text-muted-foreground/50 mb-4" />
+          <p className="text-muted-foreground font-medium">No recent jobs</p>
+          <p className="text-sm text-muted-foreground/70 mt-1">Jobs will appear here as you create them</p>
+        </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {recentJobs.map((job) => (
-            <div key={job.id} className="flex items-center gap-4 p-4 bg-muted/30 hover:bg-muted/50 rounded-lg border border-border/50 transition-colors">
-              <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+            <div key={job.id} className="group relative flex items-start gap-4 p-4 bg-card hover:bg-muted/50 rounded-xl border border-border/60 hover:border-border transition-all duration-200 hover:shadow-sm">
+              {/* Status indicator */}
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-2 ${
                 job.status === 'completed' ? 'bg-emerald-500' :
                 job.status === 'cancelled' ? 'bg-red-500' :
                 job.status === 'no_parking' ? 'bg-muted-foreground' :
                 'bg-amber-500'
               }`} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate mb-1">
-                  {job.title}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(job.created_at).toLocaleDateString()} • {job.status.replace('_', ' ')}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {job.is_recurring && (
-                  <Repeat size={16} className="text-purple-600 dark:text-purple-400" />
-                )}
-                {job.location && (
-                  <MapPin size={16} className="text-blue-600 dark:text-blue-400" />
-                )}
+              
+              {/* Content */}
+              <div className="flex-1 min-w-0 space-y-2">
+                <div className="flex items-start justify-between gap-3">
+                  <h4 className="font-medium text-foreground truncate leading-5">
+                    {job.title}
+                  </h4>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {job.is_recurring && (
+                      <Badge variant="secondary" className="h-6 px-2 text-xs">
+                        <Repeat size={12} className="mr-1" />
+                        Recurring
+                      </Badge>
+                    )}
+                    {job.location && (
+                      <Badge variant="outline" className="h-6 px-2 text-xs">
+                        <MapPin size={12} className="mr-1" />
+                        Located
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">
+                    {new Date(job.created_at).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </span>
+                  <Badge 
+                    variant={
+                      job.status === 'completed' ? 'default' :
+                      job.status === 'cancelled' ? 'destructive' :
+                      job.status === 'no_parking' ? 'secondary' :
+                      'secondary'
+                    }
+                    className="h-5 px-2 text-xs font-medium"
+                  >
+                    {job.status === 'not_started' ? 'Not Started' :
+                     job.status === 'no_parking' ? 'No Parking' :
+                     job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                  </Badge>
+                </div>
               </div>
             </div>
           ))}
