@@ -63,8 +63,8 @@ export function JobList() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">My Jobs</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="text-2xl font-bold text-foreground">My Jobs</h2>
+            <p className="text-muted-foreground mt-1">
               {jobs.length} job{jobs.length > 1 ? 's' : ''} total
             </p>
           </div>

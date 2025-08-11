@@ -57,14 +57,14 @@ export function JobFormPage() {
               </Button>
               <div className="h-6 w-px bg-border" />
               <div className="flex items-center gap-2">
-                <Briefcase size={20} className="text-gray-600" />
-                <h1 className="text-xl font-semibold text-gray-900">
+                <Briefcase size={20} className="text-muted-foreground" />
+                <h1 className="text-xl font-semibold text-foreground">
                   {isEdit ? 'Edit Job' : 'Create New Job'}
                 </h1>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-muted-foreground">
                 {user?.email}
               </span>
             </div>
