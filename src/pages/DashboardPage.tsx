@@ -1,7 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { useUnreadNotificationsCount } from '../hooks/useNotifications'
-import { Button } from '../components/ui/Button'
 import { JobList } from '../components/jobs/JobList'
 import { TeamManagement } from '../components/teams/TeamManagement'
 import { TeamModal } from '../components/teams/TeamModal'
@@ -9,11 +8,13 @@ import { TeamSelector } from '../components/teams/TeamSelector'
 import { NotificationCenter } from '../components/notifications/NotificationCenter'
 import { NotificationPreferences } from '../components/notifications/NotificationPreferences'
 import { AnalyticsDashboard } from '../components/analytics/AnalyticsDashboard'
-import { LogOut, Briefcase, Users, Plus, Bell, Settings, BarChart3 } from 'lucide-react'
+import { ResponsiveNav } from '../components/navigation/ResponsiveNav'
+import { Button } from '../components/ui/Button'
+import { LogOut, Plus } from 'lucide-react'
 
 export function DashboardPage() {
-  const { user, signOut } = useAuth()
-  const { data: unreadCount = 0 } = useUnreadNotificationsCount()
+  const navigate = useNavigate()
+  const { signOut } = useAuth()
   const [activeTab, setActiveTab] = useState<'jobs' | 'teams' | 'analytics' | 'settings'>('jobs')
   const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(undefined)
   const [showTeamModal, setShowTeamModal] = useState(false)
@@ -33,105 +34,42 @@ export function DashboardPage() {
     setSelectedTeamId(undefined)
   }
 
+  const handleCreateJob = () => {
+    navigate('/jobs/new')
+  }
+
+  const handleCreateTeam = () => {
+    setShowTeamModal(true)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-                                   <h1 className="text-xl font-semibold text-gray-900">Job Tracker</h1>
-            </div>
-                              <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-600">
-                      Hello, {user?.email}
-                    </span>
-                    
-                    {/* Notifications */}
-                    <div className="relative">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => setShowNotifications(!showNotifications)}
-                        className="relative"
-                      >
-                        <Bell size={16} />
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                            {unreadCount > 9 ? '9+' : unreadCount}
-                          </span>
-                        )}
-                      </Button>
-                      
-                      <NotificationCenter
-                        isOpen={showNotifications}
-                        onClose={() => setShowNotifications(false)}
-                      />
-                    </div>
-                    
-                    <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                      <LogOut size={16} />
-                      Sign Out
-                    </Button>
-                  </div>
-          </div>
-        </div>
-      </header>
+      {/* Responsive Navigation */}
+      <ResponsiveNav
+        activeTab={activeTab}
+        onTabChange={(tab) => setActiveTab(tab as 'jobs' | 'teams' | 'analytics' | 'settings')}
+        onCreateJob={handleCreateJob}
+        onCreateTeam={handleCreateTeam}
+        showNotifications={showNotifications}
+        onToggleNotifications={() => setShowNotifications(!showNotifications)}
+      />
 
-      {/* Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab('jobs')}
-              className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'jobs'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Briefcase size={16} />
-              Jobs
-            </button>
-            <button
-              onClick={() => setActiveTab('teams')}
-              className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'teams'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Users size={16} />
-              Teams
-            </button>
-            <button
-              onClick={() => setActiveTab('analytics')}
-              className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'analytics'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <BarChart3 size={16} />
-              Analytics
-            </button>
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'settings'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Settings size={16} />
-              Settings
-            </button>
-          </nav>
-        </div>
+      {/* Notification Center */}
+      <NotificationCenter
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+      />
+
+      {/* Desktop Sign Out Button */}
+      <div className="hidden md:block fixed top-4 right-4 z-30">
+        <Button variant="ghost" size="sm" onClick={handleSignOut}>
+          <LogOut size={16} />
+          Sign Out
+        </Button>
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-8 pt-20 md:pt-8">
         {activeTab === 'jobs' && <JobList />}
         {activeTab === 'analytics' && <AnalyticsDashboard />}
         {activeTab === 'settings' && (
