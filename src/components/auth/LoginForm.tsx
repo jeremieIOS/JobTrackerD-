@@ -60,12 +60,12 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Job Tracker</h1>
-        <p className="text-gray-600 mt-2">Sign in to your account</p>
+        <h1 className="text-3xl font-bold text-foreground">Job Tracker</h1>
+        <p className="text-muted-foreground mt-2">Sign in to your account</p>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-2 text-destructive">
           <AlertCircle size={16} />
           <span className="text-sm">{error}</span>
         </div>
@@ -73,11 +73,11 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
             Email
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
             <input
               {...register('email')}
               type="email"
@@ -87,16 +87,16 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
             />
           </div>
           {errors.email && (
-            <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
+            <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
             <input
               {...register('password')}
               type="password"
@@ -106,7 +106,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
             />
           </div>
           {errors.password && (
-            <p className="text-red-600 text-sm mt-1">{errors.password.message}</p>
+            <p className="text-destructive text-sm mt-1">{errors.password.message}</p>
           )}
         </div>
 
@@ -118,10 +118,10 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
       <div className="mt-4">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+            <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">Or</span>
+            <span className="bg-background px-2 text-muted-foreground">Or</span>
           </div>
         </div>
 
@@ -145,16 +145,16 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
         <button
           type="button"
           onClick={onForgotPassword}
-          className="text-primary-600 hover:text-primary-700 text-sm"
+          className="text-primary hover:text-primary/80 text-sm"
         >
           Forgot password?
         </button>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-muted-foreground">
           Don't have an account?{' '}
           <button
             type="button"
             onClick={onToggleMode}
-            className="text-primary-600 hover:text-primary-700 font-medium"
+            className="text-primary hover:text-primary/80 font-medium"
           >
             Sign up
           </button>
