@@ -10,8 +10,8 @@ import { NotificationPreferences } from '../components/notifications/Notificatio
 import { AnalyticsDashboard } from '../components/analytics/AnalyticsDashboard'
 import { ResponsiveNav } from '../components/navigation/ResponsiveNav'
 import { ThemeToggle } from '../components/theme/ThemeToggle'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '../components/ui/button'
+import { Card } from '../components/ui/card'
 import { LogOut, Plus } from 'lucide-react'
 
 export function DashboardPage() {

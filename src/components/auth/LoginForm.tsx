@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '@/components/ui/button'
-import { AlertCircle, Mail, Lock } from '@/components/ui/icons'
+import { Button } from '../ui/button'
+import { AlertCircle, Mail, Lock } from '../ui/icons'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email'),

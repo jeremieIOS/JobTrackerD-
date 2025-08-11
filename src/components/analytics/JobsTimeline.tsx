@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Calendar } from 'lucide-react'
-import { Card } from '@/components/ui/card'
+import { Card } from '../ui/card'
 import type { Job } from '../../lib/supabase'
 
 interface JobsTimelineProps {

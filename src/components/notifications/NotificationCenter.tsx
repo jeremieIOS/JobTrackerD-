@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNotifications } from '../../hooks/useNotifications'
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import { 
   Bell, 
   BellOff,

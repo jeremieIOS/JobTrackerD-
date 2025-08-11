@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LoginForm } from '../components/auth/LoginForm'
 import { SignupForm } from '../components/auth/SignupForm'
-import { Card } from '@/components/ui/card'
+import { Card } from '../components/ui/card'
 
 export function AuthPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login')

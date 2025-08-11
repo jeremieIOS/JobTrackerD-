@@ -4,7 +4,7 @@ import { useJobs } from '../../hooks/useJobs'
 import type { Job, JobStatus } from '../../lib/supabase'
 import { JobCard } from './JobCard'
 import { TeamSelector } from '../teams/TeamSelector'
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import { Plus, Search, Filter } from 'lucide-react'
 
 export function JobList() {

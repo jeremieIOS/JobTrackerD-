@@ -1,7 +1,7 @@
 import { useJobs } from '../../hooks/useJobs'
 import { useTeams } from '../../hooks/useTeams'
 import { JobsTimeline } from './JobsTimeline'
-import { Card } from '@/components/ui/card'
+import { Card } from '../ui/card'
 import { 
   TrendingUp, 
   CheckCircle, 
@@ -12,7 +12,7 @@ import {
   Target,
   BarChart3
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '../ui/badge'
 import { useMemo } from 'react'
 import type { Job } from '../../lib/supabase'
 

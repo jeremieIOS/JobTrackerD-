@@ -1,13 +1,13 @@
-import { Monitor, Moon, Sun } from '@/components/ui/icons'
-import { Button } from '@/components/ui/button'
+import { Monitor, Moon, Sun } from '../ui/icons'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '../ui/dropdown-menu'
 import { useTheme } from '../providers/ThemeProvider'
-import { defaultOutlineIcon } from '@/components/ui/icons'
+import { defaultOutlineIcon } from '../ui/icons'
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()

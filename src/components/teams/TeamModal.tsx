@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCreateTeam, useJoinTeam } from '../../hooks/useTeams'
-import { Button } from '@/components/ui/button'
-import { X, UserPlus, Plus } from '@/components/ui/icons'
+import { Button } from '../ui/button'
+import { X, UserPlus, Plus } from '../ui/icons'
 
 const createTeamSchema = z.object({
   name: z.string().min(1, 'Team name is required').max(50, 'Team name must be less than 50 characters')

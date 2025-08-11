@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNetwork } from '../../hooks/useNetwork'
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import { RefreshCw, Wifi, WifiOff, Download, X } from 'lucide-react'
 
 interface UpdateNotificationProps {

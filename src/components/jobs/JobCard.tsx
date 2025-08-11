@@ -1,6 +1,6 @@
 import type { Job, JobStatus } from '../../lib/supabase'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '../ui/button'
+import { Card, CardContent } from '../ui/card'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'
 import { 
@@ -16,7 +16,7 @@ import {
   RotateCw,
   MapPin,
   ExternalLink
-} from '@/components/ui/icons'
+} from '../ui/icons'
 
 import { formatDistanceToNow } from 'date-fns'
 import { useState, useEffect, useRef, memo } from 'react'

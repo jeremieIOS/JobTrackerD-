@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase, type NotificationPreferences, type NotificationType } from '../../lib/supabase'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Button } from '../ui/button'
+import { Card } from '../ui/card'
 import { Mail, Smartphone, Settings, Check, X } from 'lucide-react'
 
 export function NotificationPreferences() {
