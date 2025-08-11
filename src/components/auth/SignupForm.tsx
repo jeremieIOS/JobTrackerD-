@@ -69,7 +69,7 @@ export function SignupForm({ onToggleMode }: SignupFormProps) {
       <div className="w-full max-w-md mx-auto text-center">
         <div className="mb-8">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-foreground">Check your email</h1>
+          <h1 className="text-3xl font-bold text-primary">Check your email</h1>
           <p className="text-muted-foreground mt-2">
             We've sent a confirmation link to your email address.
             Click the link to activate your account.
@@ -86,7 +86,7 @@ export function SignupForm({ onToggleMode }: SignupFormProps) {
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Job Tracker</h1>
+        <h1 className="text-3xl font-bold text-primary">Job Tracker</h1>
         <p className="text-muted-foreground mt-2">Create your account</p>
       </div>
 
