@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/icons'
 
 import { formatDistanceToNow } from 'date-fns'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, memo } from 'react'
 
 interface JobCardProps {
   job: Job
@@ -58,7 +58,7 @@ const priorityConfig = {
   high: 'High',
 }
 
-export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: JobCardProps) {
+function JobCardComponent({ job, onEdit, onDelete, onComplete, onStatusChange }: JobCardProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
   const [showActionsMenu, setShowActionsMenu] = useState(false)
@@ -315,3 +315,19 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
     </Card>
   )
 }
+
+// Memoized export for performance optimization
+export const JobCard = memo(JobCardComponent, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return (
+    prevProps.job.id === nextProps.job.id &&
+    prevProps.job.title === nextProps.job.title &&
+    prevProps.job.status === nextProps.job.status &&
+    prevProps.job.priority === nextProps.job.priority &&
+    prevProps.job.description === nextProps.job.description &&
+    prevProps.job.due_date === nextProps.job.due_date &&
+    prevProps.job.updated_at === nextProps.job.updated_at &&
+    JSON.stringify(prevProps.job.location) === JSON.stringify(nextProps.job.location) &&
+    prevProps.job.is_recurring === nextProps.job.is_recurring
+  )
+})

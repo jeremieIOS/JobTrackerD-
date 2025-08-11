@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAuth } from './hooks/useAuth'
-import { AuthPage } from './pages/AuthPage'
-import { DashboardPage } from './pages/DashboardPage'
-import { JobFormPage } from './pages/JobFormPage'
 import { ErrorBoundary } from './components/error/ErrorBoundary'
 import { UpdateNotification, InstallPrompt } from './components/system/UpdateNotification'
 import { ThemeProvider } from './components/providers/ThemeProvider'
-import { useEffect } from 'react'
+import { useEffect, Suspense, lazy } from 'react'
+import { CenteredLoading } from './components/performance/LazyWrapper'
+
+// Lazy load pages for optimal performance
+const AuthPage = lazy(() => import('./pages/AuthPage').then(module => ({ default: module.AuthPage })))
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then(module => ({ default: module.DashboardPage })))
+const JobFormPage = lazy(() => import('./pages/JobFormPage').then(module => ({ default: module.JobFormPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -101,7 +104,9 @@ function App() {
               path="/auth"
               element={
                 <PublicRoute>
-                  <AuthPage />
+                  <Suspense fallback={<CenteredLoading message="Loading authentication..." />}>
+                    <AuthPage />
+                  </Suspense>
                 </PublicRoute>
               }
             />
@@ -109,7 +114,9 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  <Suspense fallback={<CenteredLoading message="Loading dashboard..." />}>
+                    <DashboardPage />
+                  </Suspense>
                 </ProtectedRoute>
               }
             />
@@ -117,7 +124,9 @@ function App() {
               path="/jobs/new"
               element={
                 <ProtectedRoute>
-                  <JobFormPage />
+                  <Suspense fallback={<CenteredLoading message="Loading job form..." />}>
+                    <JobFormPage />
+                  </Suspense>
                 </ProtectedRoute>
               }
             />
@@ -125,7 +134,9 @@ function App() {
               path="/jobs/:id/edit"
               element={
                 <ProtectedRoute>
-                  <JobFormPage />
+                  <Suspense fallback={<CenteredLoading message="Loading job form..." />}>
+                    <JobFormPage />
+                  </Suspense>
                 </ProtectedRoute>
               }
             />
