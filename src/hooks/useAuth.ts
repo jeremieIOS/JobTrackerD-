@@ -18,7 +18,8 @@ export function useAuth() {
     // Écouter les changements d'auth
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔍 DEBUG: Auth state change:', { event, session: session ? 'exists' : 'null', userId: session?.user?.id })
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -54,8 +55,34 @@ export function useAuth() {
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    console.log('🔍 DEBUG: useAuth.signOut called')
+    try {
+      const { error } = await supabase.auth.signOut()
+      console.log('🔍 DEBUG: supabase.auth.signOut result:', { error })
+      
+      // Gérer l'erreur "Auth session missing"
+      if (error && error.message?.includes('Auth session missing')) {
+        console.log('⚠️ Session manquante - clearing local state manually')
+        // Forcer la mise à jour locale même si Supabase échoue
+        setSession(null)
+        setUser(null)
+        // Ne pas retourner l'erreur car on a géré le cas
+        return { error: null }
+      }
+      
+      if (error) {
+        console.error('❌ Supabase signOut error:', error)
+      } else {
+        console.log('✅ Supabase signOut successful')
+      }
+      return { error }
+    } catch (exception) {
+      console.error('❌ Supabase signOut exception:', exception)
+      // En cas d'exception, forcer le clear local
+      setSession(null)
+      setUser(null)
+      return { error: exception }
+    }
   }
 
   const resetPassword = async (email: string) => {

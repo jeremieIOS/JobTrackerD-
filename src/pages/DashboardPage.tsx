@@ -23,7 +23,26 @@ export function DashboardPage() {
   const [showNotifications, setShowNotifications] = useState(false)
 
   const handleSignOut = async () => {
-    await signOut()
+    console.log('🔍 DEBUG: handleSignOut called')
+    try {
+      const result = await signOut()
+      console.log('🔍 DEBUG: signOut result:', result)
+      if (result?.error) {
+        console.error('❌ SignOut error:', result.error)
+        // Même en cas d'erreur de session, forcer la redirection
+        if (result.error.message?.includes('Auth session missing')) {
+          console.log('🔄 Session manquante, redirection forcée vers /auth')
+          navigate('/auth')
+        }
+      } else {
+        console.log('✅ SignOut successful')
+      }
+    } catch (error) {
+      console.error('❌ SignOut exception:', error)
+      // En cas d'exception, forcer la redirection
+      console.log('🔄 Exception logout, redirection forcée vers /auth')
+      navigate('/auth')
+    }
   }
 
   const handleTeamCreated = (teamId: string) => {
@@ -63,8 +82,13 @@ export function DashboardPage() {
       />
 
       {/* Desktop Sign Out Button */}
-      <div className="hidden md:block fixed top-4 right-4 z-30">
-        <Button variant="ghost" size="sm" onClick={handleSignOut}>
+      <div className="hidden md:block fixed top-4 right-4 z-50">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleSignOut}
+          className="border border-red-500 bg-red-50 hover:bg-red-100"
+        >
           <LogOut size={16} />
           Sign Out
         </Button>
