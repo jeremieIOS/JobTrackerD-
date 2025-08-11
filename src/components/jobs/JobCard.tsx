@@ -190,7 +190,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         <div className="flex items-center gap-2">
           {/* Recurring indicator */}
           {job.is_recurring && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+            <div className="flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-medium">
               <RotateCw className="h-3 w-3 stroke-[1.5]" />
               <span>Recurring</span>
             </div>
@@ -198,7 +198,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
 
           {/* Generated from recurring job indicator */}
           {job.parent_job_id && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+            <div className="flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-xs font-medium">
               <RotateCw className="h-3 w-3 stroke-[1.5]" />
               <span>Auto-generated</span>
             </div>
@@ -241,7 +241,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
                 href={`https://www.google.com/maps?q=${job.location.lat},${job.location.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80"
               >
                 <ExternalLink size={12} />
                 <span>Open in Maps</span>
@@ -283,14 +283,14 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           </button>
           
           {showStatusDropdown && (
-            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 min-w-[150px]">
+            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-card border border-border rounded-lg shadow-lg z-20 min-w-[150px]">
               <div className="p-1">
                 {statusOptions.map((option) => (
                   <button
                     key={option.value}
                     onClick={() => handleStatusChange(option.value)}
-                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent rounded text-left ${
-                      option.value === job.status ? 'bg-primary/10 text-primary' : 'text-card-foreground'
+                    className={`flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-muted rounded text-left ${
+                      option.value === job.status ? 'bg-accent text-accent-foreground' : 'text-foreground'
                     }`}
                   >
                     {option.label}
