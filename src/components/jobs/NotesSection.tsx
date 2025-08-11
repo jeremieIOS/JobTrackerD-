@@ -83,16 +83,16 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
         <div className="pb-3">
           {/* Notes list */}
           {isLoading ? (
-            <div className="py-4 text-center text-gray-500 text-sm">
+            <div className="py-4 text-center text-muted-foreground text-sm">
               Loading notes...
             </div>
           ) : notes.length > 0 ? (
             <div className="space-y-3 mb-4">
               {notes.map((note) => (
-                <div key={note.id} className="bg-gray-50 rounded-lg p-3">
+                <div key={note.id} className="bg-muted/50 rounded-lg p-3 border border-border/50">
                   {/* Note header */}
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2 text-xs text-gray-600">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <User size={12} />
                       <span className="font-medium">
                         {note.user?.name || note.user?.email || 'Unknown user'}
@@ -106,14 +106,14 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleEditNote(note)}
-                          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                          className="p-1 text-muted-foreground hover:text-primary transition-colors"
                           title="Edit note"
                         >
                           <Edit3 size={12} />
                         </button>
                         <button
                           onClick={() => handleDeleteNote(note.id)}
-                          className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                          className="p-1 text-muted-foreground hover:text-destructive transition-colors"
                           title="Delete note"
                         >
                           <Trash2 size={12} />
@@ -128,21 +128,21 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
                       <textarea
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded text-sm resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full p-2 border border-input rounded text-sm resize-none focus:ring-2 focus:ring-ring focus:border-ring bg-background text-foreground"
                         rows={2}
                         placeholder="Edit your note..."
                       />
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={handleCancelEdit}
-                          className="flex items-center gap-1 px-2 py-1 text-xs text-gray-600 hover:text-gray-800 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                         >
                           <X size={12} />
                           Cancel
                         </button>
                         <button
                           onClick={handleSaveEdit}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
                         >
                           <Check size={12} />
                           Save
@@ -150,7 +150,7 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                    <p className="text-sm text-foreground whitespace-pre-wrap">
                       {note.content}
                     </p>
                   )}
@@ -158,7 +158,7 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
               ))}
             </div>
           ) : (
-            <div className="py-4 text-center text-gray-500 text-sm">
+            <div className="py-4 text-center text-muted-foreground text-sm">
               No notes yet. Add the first one below!
             </div>
           )}
@@ -169,7 +169,7 @@ export function NotesSection({ jobId, isExpanded, onToggle, notesCount }: NotesS
               value={newNoteContent}
               onChange={(e) => setNewNoteContent(e.target.value)}
               placeholder="Add a note..."
-              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full p-3 border border-input rounded-lg resize-none focus:ring-2 focus:ring-ring focus:border-ring bg-background text-foreground placeholder:text-muted-foreground"
               rows={3}
               disabled={isCreating}
             />
