@@ -18,7 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface JobCardProps {
   job: Job
@@ -60,11 +60,27 @@ const priorityConfig = {
 export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: JobCardProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
+  const [showActionsMenu, setShowActionsMenu] = useState(false)
+  const actionsMenuRef = useRef<HTMLDivElement>(null)
   const status = statusConfig[job.status as keyof typeof statusConfig]
   const StatusIcon = status.icon
   
   // Get notes count
   const { data: notesCount = 0 } = useJobNotesCount(job.id)
+
+  // Close actions menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
+        setShowActionsMenu(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
            const statusOptions: { value: JobStatus; label: string }[] = [
            { value: 'not_started', label: 'Not Started' },
@@ -87,14 +103,22 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         <h3 className="font-semibold text-gray-900 text-lg">{job.title}</h3>
         
         {/* Actions dropdown */}
-        <div className="relative group">
-          <Button variant="ghost" size="sm">
+        <div className="relative" ref={actionsMenuRef}>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setShowActionsMenu(!showActionsMenu)}
+          >
             <MoreHorizontal size={16} />
           </Button>
-          <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+          {showActionsMenu && (
+            <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
             <div className="p-1">
               <button
-                onClick={() => onEdit(job)}
+                onClick={() => {
+                  onEdit(job)
+                  setShowActionsMenu(false)
+                }}
                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
               >
                 <Edit size={14} />
@@ -102,7 +126,10 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
               </button>
               {!job.completed && (
                 <button
-                  onClick={() => onComplete(job.id)}
+                  onClick={() => {
+                    onComplete(job.id)
+                    setShowActionsMenu(false)
+                  }}
                   className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-700 hover:bg-green-50 rounded"
                 >
                   <CheckCircle size={14} />
@@ -110,19 +137,23 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
                 </button>
               )}
               <button
-                onClick={() => onDelete(job.id)}
+                onClick={() => {
+                  onDelete(job.id)
+                  setShowActionsMenu(false)
+                }}
                 className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-700 hover:bg-red-50 rounded"
               >
                 <Trash2 size={14} />
                 Delete
               </button>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* 2. Created by + when created */}
-      <div className="flex items-center justify-between py-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
         {job.created_by_user && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <User size={14} />
@@ -139,7 +170,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       <div className="border-t border-gray-200"></div>
 
       {/* 4. Due date + badge if recurring */}
-      <div className="flex items-center justify-between py-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           {job.due_date ? (
             <>
@@ -177,7 +208,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
       <div className="border-t border-gray-200"></div>
 
       {/* 6. Priority + Location */}
-      <div className="flex items-center justify-between py-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3">
         {/* Priority */}
         <div className="flex items-center gap-2 text-sm">
           {job.priority ? (
@@ -197,7 +228,7 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           {job.location ? (
             <>
               <div className="flex items-center gap-1 text-sm text-gray-600">
@@ -268,9 +299,6 @@ export function JobCard({ job, onEdit, onDelete, onComplete, onStatusChange }: J
           )}
         </div>
       </div>
-
-      {/* 11. Separator */}
-      <div className="border-t border-gray-200"></div>
 
       {/* 12. Note */}
       <div className="pt-3">
