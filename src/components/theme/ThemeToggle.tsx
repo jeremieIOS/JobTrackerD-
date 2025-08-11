@@ -1,5 +1,5 @@
 import { Monitor, Moon, Sun } from '../ui/icons'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import {
   DropdownMenu,
   DropdownMenuContent,

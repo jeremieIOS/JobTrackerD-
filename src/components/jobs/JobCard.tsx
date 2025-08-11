@@ -1,5 +1,5 @@
 import type { Job, JobStatus } from '../../lib/supabase'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { Card, CardContent } from '../ui/card'
 import { NotesSection } from './NotesSection'
 import { useJobNotesCount } from '../../hooks/useJobNotes'

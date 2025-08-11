@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useJobNotes } from '../../hooks/useJobNotes'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { 
   MessageCircle, 
   Send, 

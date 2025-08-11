@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCreateTeam, useJoinTeam } from '../../hooks/useTeams'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { X, UserPlus, Plus } from '../ui/icons'
 
 const createTeamSchema = z.object({

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { supabase, type NotificationPreferences, type NotificationType } from '../../lib/supabase'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { Card } from '../ui/card'
 import { Mail, Smartphone, Settings, Check, X } from 'lucide-react'
 

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '../../hooks/useAuth'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { AlertCircle, Mail, Lock, CheckCircle } from 'lucide-react'
 
 const signupSchema = z.object({

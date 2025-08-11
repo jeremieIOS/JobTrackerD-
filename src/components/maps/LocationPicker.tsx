@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Loader } from '@googlemaps/js-api-loader'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { MapPin, Crosshair, X, Search } from 'lucide-react'
 // import { useGoogleMaps } from '../../hooks/useGoogleMaps' // Commented for build fix
 

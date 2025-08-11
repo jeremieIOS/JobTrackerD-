@@ -1,6 +1,6 @@
 import { Bell, User, Plus, Briefcase, Users, BarChart3, Settings } from '../ui/icons'
 import { defaultOutlineIcon } from '../ui/icons'
-import { Button } from '../ui/button'
+import { Button } from '../../lib/components'
 import { Badge } from '../ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs'
 import { Avatar, AvatarFallback } from '../ui/avatar'
