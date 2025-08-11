@@ -1,4 +1,5 @@
-import { Bell, User, Plus } from 'lucide-react'
+import { Bell, User, Plus } from '@/components/ui/icons'
+import { defaultIconSize } from '@/components/ui/icons'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -63,7 +64,7 @@ export function DesktopNav({
               onClick={onToggleNotifications}
               className="relative"
             >
-              <Bell className="h-5 w-5" />
+              <Bell className={defaultIconSize} />
               {unreadCount > 0 && (
                 <Badge 
                   variant="destructive" 

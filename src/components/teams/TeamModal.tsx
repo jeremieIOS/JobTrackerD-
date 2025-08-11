@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useCreateTeam, useJoinTeam } from '../../hooks/useTeams'
 import { Button } from '@/components/ui/button'
-import { X, UserPlus, Plus } from 'lucide-react'
+import { X, UserPlus, Plus } from '@/components/ui/icons'
 
 const createTeamSchema = z.object({
   name: z.string().min(1, 'Team name is required').max(50, 'Team name must be less than 50 characters')

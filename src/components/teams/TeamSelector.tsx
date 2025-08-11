@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTeams } from '../../hooks/useTeams'
 import { TeamModal } from './TeamModal'
-import { ChevronDown, Plus, Users } from 'lucide-react'
+import { ChevronDown, Plus, Users } from '@/components/ui/icons'
 import type { Team, TeamRole } from '../../lib/supabase'
 
 interface TeamSelectorProps {
