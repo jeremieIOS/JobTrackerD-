@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type React from 'react'
-import { Bell, Menu, Plus, User, Briefcase, Users, BarChart3, Settings } from '../ui/icons'
+import { Bell, Menu, Plus, User, Briefcase, Users, BarChart3, Settings, LogOut } from '../ui/icons'
 import { defaultOutlineIcon } from '../ui/icons'
 import { Button } from '../../lib/components'
 import { Badge } from '../ui/badge'
@@ -33,8 +33,13 @@ export function MobileNav({
   onToggleNotifications 
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const { data: unreadCount = 0 } = useUnreadNotificationsCount()
+
+  const handleSignOut = async () => {
+    setIsOpen(false)  // Fermer le menu d'abord
+    await signOut()
+  }
 
   // Close menu when tab changes
   useEffect(() => {
@@ -137,6 +142,19 @@ export function MobileNav({
                         <span className="font-medium">Online</span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Sign Out Button */}
+                  <div className="mt-4">
+                    <Button
+                      onClick={handleSignOut}
+                      variant="destructive"
+                      className="w-full justify-start gap-2"
+                      size="sm"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </Button>
                   </div>
                 </nav>
               </SheetContent>
